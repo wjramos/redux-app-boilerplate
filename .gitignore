@@ -1,0 +1,32 @@
+
+# generated files
+bin
+gen
+www
+coverage
+res
+config.xml
+tmp
+dist
+*.log
+
+# IDEs
+.idea
+.tags*
+
+# OSX
+.DS_Store
+
+# Thumbnails
+._*
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+
+# Cordova generated
+platforms
+plugins
+
+# packages
+node_modules

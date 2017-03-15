@@ -1,0 +1,13 @@
+{
+  "verbose": true,
+  "scriptPreprocessor": "./test/jestPreprocessor",
+  "unmockedModulePathPatterns": [
+    "<rootDir>/node_modules/react/",
+    "<rootDir>/node_modules/react-dom/",
+    "<rootDir>/node_modules/react-addons-test-utils/",
+    "<rootDir>/node_modules/font-awesome/"
+  ],
+  "testPathDirs": ["src/"],
+  "testRegex": "/(test|spec)+.*jsx?$|.+(test|-spec)+.*jsx?$|__tests__/.*jsx?$",
+  "preprocessorIgnorePatterns": [ "<rootDir>/node_modules/" ]
+}
