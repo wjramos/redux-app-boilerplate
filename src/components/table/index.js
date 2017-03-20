@@ -1,0 +1,48 @@
+import React from 'react';
+
+export const Cell = ({ children }) => (
+  <td>
+    {children}
+  </td>
+);
+
+export const Row = ({ row = {} }) => (
+  <tr>
+    {Object.keys(row).map((cell, i) => (
+      <Cell key={i}>
+        {row[cell]}
+      </Cell>
+    ))}
+  </tr>
+);
+
+export const HeaderRow = ({ labels = [] }) => (
+  <tr>
+    {labels.map((label, i) => (
+      <Cell key={i}>
+        {label}
+      </Cell>
+    ))}
+  </tr>
+);
+
+export const Body = ({ rows = [] }) => (
+  <tbody>
+    {rows.map((row, i) => (
+      <Row key={i} row={row} />
+    ))}
+  </tbody>
+);
+
+export const Head = ({ labels }) => (
+  <thead>
+    <HeaderRow labels={labels} />
+  </thead>
+);
+
+export default ({ rows = [], rows: [row], labels = [] }) => (
+  <table>
+    <Head labels={labels || (!labels && row ? Object.keys(row) : [])} />
+    <Body rows={rows} />
+  </table>
+);

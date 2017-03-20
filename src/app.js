@@ -1,9 +1,11 @@
 import React from 'react';
+import FastClick from 'fastclick';
 import { render } from 'react-dom';
 import { hashHistory } from 'react-router';
+import { StyleRoot, Style } from 'radium';
 import { syncHistoryWithStore } from 'react-router-redux';
-import { StyleRoot } from 'radium';
-import FastClick from 'fastclick';
+
+import style from './style'
 import Root from './containers/Root';
 import configureStore from './stores/configureStore';
 
@@ -19,6 +21,7 @@ function init() {
   render(
     (
       <StyleRoot>
+        <Style rules={style} />
         <Root store={reduxStore} history={history} />
       </StyleRoot>
     ),

@@ -5,7 +5,7 @@ import createLogger from 'redux-logger';
 import thunk from 'redux-thunk';
 
 import rootReducer from '../reducers';
-import updateChat from '../middleware/update';
+import { api } from '../middleware';
 import DevTools from '../containers/DevTools';
 
 export default function configureStore(history, initialState = {}) {
@@ -13,13 +13,15 @@ export default function configureStore(history, initialState = {}) {
     applyMiddleware(
       thunk,
       routerMiddleware(history),
-      updateChat,
+      api,
       createLogger(),
     ),
     persistState([
       'offlineQueue',
-      'chat',
-      'user',
+      'selected',
+      'inventory',
+      'items',
+      'category',
     ]),
     // Required! Enable Redux DevTools with the monitors you chose
     DevTools.instrument(),

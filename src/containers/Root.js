@@ -1,6 +1,7 @@
 import networkListener from 'redux-queue-offline-listener';
 import React, { PropTypes } from 'react';
 import { Provider } from 'react-redux';
+
 import routes from '../routes';
 import DevTools from './DevTools';
 import { Router } from 'react-router';
@@ -11,7 +12,7 @@ const Root = props => (
   <NetworkListenerProvider store={props.store}>
     <div>
       <Router history={props.history} routes={routes} />
-      <DevTools />
+      {/* <DevTools /> */}
     </div>
   </NetworkListenerProvider>
 );

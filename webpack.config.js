@@ -62,27 +62,27 @@ const webpackConfig = {
           plugins: ['transform-decorators-legacy'],
         },
       },
-      {
-        test: /\.css$/,
-        loader: ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader' }),
-      },
-      {
-        test: /\.(png|jpg)$/,
-        loader: 'url?limit=8192',
-      },
-      {
-        test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9](-alpha\.\d?)?)?$/,
-        loader: 'url?limit=10000&minetype=application/font-woff',
-      },
-      {
-        test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9](-alpha\.\d?)?)?$/,
-        loader: 'file',
-      },
-      {
-        test: /\.mp4$/,
-        loader: 'url?mimetype=video/mp4',
-      },
-      { test: /\.json$/, loader: 'json' },
+      // {
+      //   test: /\.css$/,
+      //   loader: ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader' }),
+      // },
+      // {
+      //   test: /\.(png|jpg)$/,
+      //   loader: 'url?limit=8192',
+      // },
+      // {
+      //   test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9](-alpha\.\d?)?)?$/,
+      //   loader: 'url?limit=10000&minetype=application/font-woff',
+      // },
+      // {
+      //   test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9](-alpha\.\d?)?)?$/,
+      //   loader: 'file',
+      // },
+      // {
+      //   test: /\.mp4$/,
+      //   loader: 'url?mimetype=video/mp4',
+      // },
+      // { test: /\.json$/, loader: 'json' },
     ],
   },
 };
