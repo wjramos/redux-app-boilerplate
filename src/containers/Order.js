@@ -37,8 +37,6 @@ class Order extends Component {
   }
 
   render() {
-    const { items, inventory, selected } = this.props;
-
     return (
       <OrderView {...this.props} />
     );

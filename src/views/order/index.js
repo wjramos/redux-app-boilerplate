@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import Radium from 'radium';
 
 import style from './style';
-import { List, Table, Select, Badge } from '../../components';
+import { List, Table, Select, Badge, Banner, Button, Section, Input } from '../../components';
 
 @Radium
 export default class Order extends Component {
@@ -11,6 +11,7 @@ export default class Order extends Component {
     removeSelection: PropTypes.func.isRequired,
     selectCategory: PropTypes.func.isRequired,
     clearCategory: PropTypes.func.isRequired,
+    category: PropTypes.object,
     inventory: PropTypes.array.isRequired,
     items: PropTypes.array.isRequired,
     selected: PropTypes.array.isRequired,
@@ -59,14 +60,16 @@ export default class Order extends Component {
     const id = parseInt(value, 10);
     this.props.selectCategory(this.props.inventory.filter(item => item.id === id)[0])
 
-    // if (!this.props.selected.includes(id)) {
-    //   this.props.addSelection(id);
-    // }
+    if (this.ref.input) {
+      this.ref.input.innerText = event.target.innerText;
+    }
+  }
 
-    // Clear input after add
-    // if (this.ref.input) {
-    //   this.ref.input.value = '';
-    // }
+  onClickInput(event) {
+    if (this.ref.input) {
+      this.ref.input.value = '';
+      this.setState({ value: '' })
+    }
   }
 
   onSubmit(event) {
@@ -105,30 +108,27 @@ export default class Order extends Component {
   }
 
   clear() {
-    // @TODO - should clear both inventory and items stores
     if (this.props.selected) {
       this.props.clearSelections();
+    }
+
+    if (this.props.category) {
+      this.props.clearCategory();
     }
   }
 
   get datePicker() {
     return (
       <fieldset>
-        <h2>
-          <Badge active={true}>
-            1
-          </Badge>
+        <Section index={1}>
           Request Move Date
-        </h2>
+        </Section>
       </fieldset>
     );
   }
 
   get addPallet() {
     const inventory = this.props.inventory.filter(({ code, description }) => code.includes(this.state.value) || description.includes(this.state.value));
-    const input = !this.props.category.id ? (
-      <input onChange={::this.onChange} placeholder={'sku... | '} />
-    ) : null;
 
     const select = this.state.value ? (
       <Select
@@ -140,16 +140,13 @@ export default class Order extends Component {
 
     return (
       <fieldset>
-        <h2>
-          <Badge active={inventory}>
-            2
-          </Badge>
+        <Section active={inventory} index={2}>
           Add To Pallet Selection List
-        </h2>
+        </Section>
         <h3>
           Type To Find Item, SKU, or Pallet #, Then Select To Add
         </h3>
-        {input}
+        <input onChange={::this.onChange} placeholder={'sku... | '} onClick={::this.onClickInput} style={{ borderRadius: 0 }} />
         {select}
       </fieldset>
     );
@@ -161,15 +158,29 @@ export default class Order extends Component {
     }
   }
 
+  get selectedBanner() {
+    const { category } = this.props;
+    const text = category.id ? `${category.code}\u00a0\u2014\u00a0${category.description}` : '';
+    return (
+      <Banner>
+        {text}
+        <Button size="small" state={category.id ? 'default' : 'disabled'} onClick={::this.clearPallet} style={{ textTransform: 'uppercase', marginLeft: 'auto' }}>
+          Done
+        </Button>
+      </Banner>
+    );
+
+    return null;
+  }
+
   get selections() {
     const { selected, items, category } = this.props;
-    const action = item => (
-      <span onClick={() => this.onAdd(item.id)}>
+    const action = ({ id }) => (
+      <a onClick={() => this.onAdd(id)}>
         Add To List
-      </span>
+      </a>
     );
     const labels = [
-      '',
       'Pallet #',
       'Item Code',
       'Select for Pickup',
@@ -179,35 +190,31 @@ export default class Order extends Component {
     let banner;
     if (category.id) {
       filtered = items.filter(({ inventory_id: pallet, id }) => category.id === pallet && !selected.includes(id))
-      .map(item => Object.assign({}, item, { action: action(item) }));
-
-      banner = category.id ? (
-        <div>
-          {category.code} &mdash; {category.description}
-          <button type="button" onClick={::this.clearPallet}>Done</button>
-        </div>
-      ) : null;
+        .map(item => Object.assign({}, item, { action: action(item), inventory_id: category.code }));
+      filtered.forEach(item => {
+        delete item.id;
+      });
     }
 
     const table = filtered.length ? (
       <Table rows={filtered} labels={labels} />
-    ) : null;
+    ) : (
+      <p>Your list is empty. Make pallets available for selection from Step 2 above.</p>
+    );
 
     return (
       <fieldset>
-        <h2>
-          <Badge active={filtered.length || this.props.selected.length}>
-            3
-          </Badge>
+        <Section active={filtered.length || this.props.selected.length} index={3}>
           Choose from Pallet Selection List
-        </h2>
-        {banner}
+        </Section>
+        {this.selectedBanner}
         {table}
       </fieldset>
     );
   }
 
   get review() {
+    const { items, selected, category } = this.props;
     const action = item => (
       <a onClick={() => this.onRemove(item.id)}>
         Remove
@@ -215,31 +222,27 @@ export default class Order extends Component {
     );
 
     const labels = [
-      '',
       'Pallet #',
       'Item Code',
       'Modify List',
     ];
-    const selected = this.props.items.filter(item => this.props.selected.includes(item.id))
-      .map(item => Object.assign({}, item, { action: action(item) }));
+    const filtered = items.filter(item => selected.includes(item.id))
+      .map(item => Object.assign({}, item, { action: action(item), inventory_id: category.code }));
+    filtered.forEach(item => {
+      delete item.id;
+    });
 
-    const content = selected.length ? (
-      <div>
-        <Table rows={selected} labels={labels} />
-        <button type="button" onClick={::this.clear}>
-          Clear
-        </button>
-      </div>
-    ) : null;
+    const content = filtered.length ? (
+      <Table rows={filtered} labels={labels} />
+    ) : (
+      <p>Your list is empty. Please add pallets from Step 3 above.</p>
+    );
 
     return (
       <fieldset>
-        <h2>
-          <Badge active={selected.length}>
-            4
-          </Badge>
-          Review Pallets Selected For Pickup
-        </h2>
+        <Section active={filtered.length} index={4}>
+          Choose from Pallet Selection List
+        </Section>
         {content}
       </fieldset>
     );
@@ -248,26 +251,26 @@ export default class Order extends Component {
   get finalize() {
     return (
       <fieldset>
-        <h2>
-          <Badge active={this.props.selected.length}>
-            5
-          </Badge>
+        <Section active={this.props.selected.length} index={5}>
           Finalize Your Request
-        </h2>
-        <textarea value={this.state.output} />
-        <button disabled={!this.props.selected.length}>
+        </Section>
+        <h3>
+          Brief Description Of Inventory Being Returned
+        </h3>
+        <textarea value={this.state.output} style={{ height: 100, border: '1px solid #ccc'}} />
+        <Button onClick={::this.onSubmit} state={this.props.selected.length ? 'default' : 'disabled'}>
           Confirm and Schedule
-        </button>
-        <button type="button" onClick={::this.clear}>
+        </Button>
+        <Button state="cancel" onClick={::this.clear}>
           Cancel
-        </button>
+        </Button>
       </fieldset>
     );
   }
 
   render() {
     return (
-      <form onSubmit={::this.onSubmit}>
+      <form>
         {this.datePicker}
         {this.addPallet}
         {this.selections}

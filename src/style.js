@@ -3,6 +3,7 @@ const typographicScale = 1.618;
 export default {
   // Global Reset
   html: {
+    fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif',
     boxSizing: 'border-box',
 
     // Accessibilty-friendly setting 1 rem to equal ~10px
@@ -13,7 +14,7 @@ export default {
     margin: 0,
     padding: 0,
     border: 'none',
-    borderRadius: 'none',
+    borderRadius: 0,
     boxShadow: 'none',
     background: 'transparent',
     backgroundImage: 'none',
@@ -24,10 +25,9 @@ export default {
     textDecoration: 'inherit',
     color: 'inherit',
   },
-  'p, h1, h2, h4, h5, h5': {
+  'p, h1, h2, h3, h4, h5, h5': {
     fontSize: 'inherit',
     fontWeight: 'inherit',
-    fontFamily: 'sans-serif',
   },
   'ol, ul': {
     listStyleType: 'none',
@@ -65,6 +65,9 @@ export default {
     border: '.1rem solid #ccc',
     borderRadius: 5,
     padding: 5,
+  },
+  a: {
+    color: '#329ccc',
   },
   'table, select, input, textarea': {
     width: '100%',

@@ -1,6 +1,7 @@
 import React from 'react';
+import select from './style';
 
-export const Option = ({ children, value, selected }) => (
+export const Option = ({ children, value, selected, style }) => (
   <option
     selected={selected}
     value={value}
@@ -17,6 +18,7 @@ export default ({
   autoFocus,
   disabled,
   multiple,
+  style,
 }) => (
   <select
     onChange={onChange}
@@ -24,6 +26,7 @@ export default ({
     disabled={disabled}
     multiple={multiple}
     autoFocus={autoFocus}
+    style={Object.assign({}, select, style)}
   >
     {options.map(({ description, code, id }, i) => (
       <Option key={i} value={id} selected={selected}>
