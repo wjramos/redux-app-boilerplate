@@ -12,7 +12,7 @@ const Root = props => (
   <NetworkListenerProvider store={props.store}>
     <div>
       <Router history={props.history} routes={routes} />
-      {/* <DevTools /> */}
+      <DevTools />
     </div>
   </NetworkListenerProvider>
 );

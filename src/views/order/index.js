@@ -270,7 +270,7 @@ export default class Order extends Component {
 
   render() {
     return (
-      <form>
+      <form style={style}>
         {this.datePicker}
         {this.addPallet}
         {this.selections}
