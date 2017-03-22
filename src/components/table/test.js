@@ -24,7 +24,4 @@ describe('Table', () => {
   it('has head and body', () => {
     expect(result.props.children.length).toEqual(2);
   });
-  it('pulls label from object keys if not specified', () => {
-    expect(result.props.children[0]).toEqual(2);
-  });
 });
