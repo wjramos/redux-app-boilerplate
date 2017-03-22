@@ -16,16 +16,6 @@ export const Row = ({ row = {} }) => (
   </tr>
 );
 
-export const HeaderRow = ({ labels = [] }) => (
-  <tr>
-    {labels.map((label, i) => (
-      <Cell key={i}>
-        {label}
-      </Cell>
-    ))}
-  </tr>
-);
-
 export const Body = ({ rows = [] }) => (
   <tbody>
     {rows.map((row, i) => (
@@ -36,7 +26,7 @@ export const Body = ({ rows = [] }) => (
 
 export const Head = ({ labels }) => (
   <thead>
-    <HeaderRow labels={labels} />
+    <Row row={labels} />
   </thead>
 );
 
