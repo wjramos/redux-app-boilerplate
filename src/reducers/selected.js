@@ -3,7 +3,7 @@ export default function selected(state = [], { type, id }) {
     const newState = state.slice();
 
     if (type === 'SELECTED_ADD') {
-      newState.push(id)
+      newState.push(id);
       return newState;
     }
 

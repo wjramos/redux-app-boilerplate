@@ -1,17 +1,17 @@
-jest.unmock('./');
-
 import React from 'react';
 import TestUtils from 'react-addons-test-utils';
 import Table, { Head, Body, Row, Cell } from './';
+
+jest.unmock('./');
 
 describe('Table', () => {
   describe('Table', () => {
     const props = {
       labels: ['b'],
       rows: [
-        {a: 1},
-        {a: 2},
-        {a: 3},
+        { a: 1 },
+        { a: 2 },
+        { a: 3 },
       ],
     };
 
@@ -49,9 +49,9 @@ describe('Table', () => {
   describe('Body', () => {
     const props = {
       rows: [
-        {a: 1},
-        {a: 2},
-        {a: 3},
+        { a: 1 },
+        { a: 2 },
+        { a: 3 },
       ],
     };
 
@@ -85,7 +85,7 @@ describe('Table', () => {
   describe('Cell', () => {
     const props = {
       children: (
-        <a href="#">Cell text</a>
+        <a href="/">Cell text</a>
       ),
     };
 

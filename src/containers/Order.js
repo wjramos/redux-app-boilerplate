@@ -13,6 +13,13 @@ class Order extends Component {
     inventory: PropTypes.array,
   }
 
+  static defaultProps = {
+    selected: [],
+    category: null,
+    items: [],
+    inventory: [],
+  }
+
   constructor(props) {
     super(props);
 
@@ -23,7 +30,7 @@ class Order extends Component {
       selected,
       inventory,
       category,
-    }
+    };
   }
 
   componentWillMount() {

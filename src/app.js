@@ -5,7 +5,7 @@ import { hashHistory } from 'react-router';
 import { StyleRoot, Style } from 'radium';
 import { syncHistoryWithStore } from 'react-router-redux';
 
-import style from './style'
+import style from './style';
 import Root from './containers/Root';
 import configureStore from './stores/configureStore';
 

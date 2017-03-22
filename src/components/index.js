@@ -5,4 +5,3 @@ export Button from './button';
 export Input from './input';
 export Table from './table';
 export Badge from './badge';
-export List from './list';

@@ -2,13 +2,14 @@ import React, { Component, PropTypes } from 'react';
 import Radium from 'radium';
 
 import style from './style';
-import { List, Table, Select, Badge, Banner, Button, Section, Input } from '../../components';
+import { Table, Select, Banner, Button, Section, Input } from '../../components';
 
 @Radium
 export default class Order extends Component {
   static propTypes = {
     addSelection: PropTypes.func.isRequired,
     removeSelection: PropTypes.func.isRequired,
+    clearSelections: PropTypes.func.isRequired,
     selectCategory: PropTypes.func.isRequired,
     clearCategory: PropTypes.func.isRequired,
     category: PropTypes.object,
@@ -21,6 +22,7 @@ export default class Order extends Component {
     items: [],
     inventory: [],
     selected: [],
+    category: null,
   }
 
   constructor(props) {
@@ -36,9 +38,9 @@ export default class Order extends Component {
     window.scroll(0, 0);
   }
 
-  componentWillReceiveProps(props) {
-
-  }
+  // componentWillReceiveProps(props) {
+  //
+  // }
 
   onChange(event) {
     const { value = '' } = event.target;
@@ -58,7 +60,7 @@ export default class Order extends Component {
     }
 
     const id = parseInt(value, 10);
-    this.props.selectCategory(this.props.inventory.filter(item => item.id === id)[0])
+    this.props.selectCategory(this.props.inventory.filter(item => item.id === id)[0]);
 
     if (this.ref.input) {
       this.ref.input.innerText = event.target.innerText;
@@ -66,16 +68,13 @@ export default class Order extends Component {
   }
 
   onClickInput(event) {
-    if (this.ref.input) {
-      this.ref.input.value = '';
-      this.setState({ value: '' })
-    }
+    event.target.value = '';
+    this.setState({ value: '' });
   }
 
   onSubmit(event) {
+    const { selected } = this.props;
     event.preventDefault();
-    const { inventory, items, selected } = this.props;
-    const { value } = this.state;
 
     // Clear input
     if (this.ref.input) {
@@ -96,7 +95,7 @@ export default class Order extends Component {
   onAdd(value) {
     // @TODO - selected items should be stored in a separate store
     if (!this.props.selected.includes(value)) {
-      this.props.addSelection(value)
+      this.props.addSelection(value);
     }
   }
 
@@ -146,7 +145,7 @@ export default class Order extends Component {
         <h3>
           Type To Find Item, SKU, or Pallet #, Then Select To Add
         </h3>
-        <input onChange={::this.onChange} placeholder={'sku... | '} onClick={::this.onClickInput} style={{ borderRadius: 0 }} />
+        <Input onChange={::this.onChange} placeholder={'sku... | '} onClick={::this.onClickInput} style={{ borderRadius: 0 }} />
         {select}
       </fieldset>
     );
@@ -164,13 +163,11 @@ export default class Order extends Component {
     return (
       <Banner>
         {text}
-        <Button size="small" state={category.id ? 'default' : 'disabled'} onClick={::this.clearPallet} style={{ textTransform: 'uppercase', marginLeft: 'auto' }}>
+        <Button size="small" state={category.id ? 'default' : 'disabled'} onClick={category.id ? ::this.clearPallet : null} style={{ textTransform: 'uppercase', marginLeft: 'auto' }}>
           Done
         </Button>
       </Banner>
     );
-
-    return null;
   }
 
   get selections() {
@@ -187,13 +184,10 @@ export default class Order extends Component {
     ];
 
     let filtered = [];
-    let banner;
     if (category.id) {
       filtered = items.filter(({ inventory_id: pallet, id }) => category.id === pallet && !selected.includes(id))
         .map(item => Object.assign({}, item, { action: action(item), inventory_id: category.code }));
-      filtered.forEach(item => {
-        delete item.id;
-      });
+      filtered.forEach(item => delete item.id);
     }
 
     const table = filtered.length ? (
@@ -228,9 +222,7 @@ export default class Order extends Component {
     ];
     const filtered = items.filter(item => selected.includes(item.id))
       .map(item => Object.assign({}, item, { action: action(item), inventory_id: category.code }));
-    filtered.forEach(item => {
-      delete item.id;
-    });
+    filtered.forEach(item => delete item.id);
 
     const content = filtered.length ? (
       <Table rows={filtered} labels={labels} />
@@ -257,7 +249,7 @@ export default class Order extends Component {
         <h3>
           Brief Description Of Inventory Being Returned
         </h3>
-        <textarea value={this.state.output} style={{ height: 100, border: '1px solid #ccc'}} />
+        <textarea value={this.state.output} style={{ height: 100, border: '1px solid #ccc' }} />
         <Button onClick={::this.onSubmit} state={this.props.selected.length ? 'default' : 'disabled'}>
           Confirm and Schedule
         </Button>

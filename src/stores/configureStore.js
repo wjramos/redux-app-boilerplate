@@ -1,4 +1,4 @@
-import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import { routerMiddleware } from 'react-router-redux';
 import persistState from 'redux-localstorage';
 import createLogger from 'redux-logger';
@@ -37,7 +37,7 @@ export default function configureStore(history, initialState = {}) {
     // Enable Webpack hot module replacement for reducers
     module.hot.accept('../reducers', () =>
       /* eslint-disable global-require */
-      store.replaceReducer(require('../reducers').default)
+      store.replaceReducer(require('../reducers').default),
       /* eslint-enable global-require */
     );
   }

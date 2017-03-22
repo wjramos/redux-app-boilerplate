@@ -51,7 +51,7 @@ export default store => next => action => {
           error: error.message || 'Something bad happened',
         })),
     );
-  } else {
-    return next(action);
   }
+
+  return next(action);
 };

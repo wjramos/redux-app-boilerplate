@@ -1,5 +1,5 @@
 const typographicScale = 1.618;
-
+// eslint-disable no-dupe-keys
 export default {
   // Global Reset
   html: {
