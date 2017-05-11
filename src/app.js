@@ -6,8 +6,8 @@ import { StyleRoot, Style } from 'radium';
 import { syncHistoryWithStore } from 'react-router-redux';
 
 import style from './style';
-import Root from './containers/Root';
-import configureStore from './stores/configureStore';
+import { Root } from './containers';
+import configureStore from './stores';
 
 function init() {
   FastClick.attach(document.body);

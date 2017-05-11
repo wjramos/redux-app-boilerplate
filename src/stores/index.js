@@ -5,8 +5,9 @@ import createLogger from 'redux-logger';
 import thunk from 'redux-thunk';
 
 import rootReducer from '../reducers';
+import * as reducers from '../reducers/';
 import { api } from '../middleware';
-import DevTools from '../containers/DevTools';
+import { DevTools } from '../containers';
 
 export default function configureStore(history, initialState = {}) {
   const enhancer = compose(
@@ -18,11 +19,7 @@ export default function configureStore(history, initialState = {}) {
     ),
     persistState([
       'offlineQueue',
-      'selected',
-      'inventory',
-      'items',
-      'category',
-    ]),
+    ].concat(Object.keys(reducers))),
     // Required! Enable Redux DevTools with the monitors you chose
     DevTools.instrument(),
   );
