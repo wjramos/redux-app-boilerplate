@@ -1,24 +1,39 @@
 import React, { Component, PropTypes } from 'react';
-import Radium from 'radium';
+// import Radium from 'radium';
 
 import style from './style';
 // import { Table, Select, Banner, Button, Section, Input } from '../../components';
 
-@Radium
+// @Radium
 export default class MainView extends Component {
   static propTypes = {
-    location: PropTypes.object.isRequired,
+    places: PropTypes.array.isRequired,
     getLocation: PropTypes.func.isRequired,
     setLocation: PropTypes.func.isRequired,
+    getPlaces: PropTypes.func.isRequired,
+    location: PropTypes.object.isRequired,
+    places: PropTypes.array,
+    radius: PropTypes.number,
+    minprice: PropTypes.number,
+    maxPrice: PropTypes.number,
+    keywords: PropTypes.oneOfType([String, Array]),
+    random: PropTypes.bool,
+  }
+
+  static defaultProps = {
+    places: [],
+    radius: 800,
+    type: 'restaurant',
+    minprice: 0,
+    maxprice: 4,
+    keywords: [],
+    random: false,
   }
 
   constructor(props) {
     super(props);
     this.ref = {};
-    this.state = {
-      value: '',
-      output: '',
-    };
+    this.state = props;
   }
 
   componentDidMount() {
@@ -27,9 +42,30 @@ export default class MainView extends Component {
     this.props.getLocation();
   }
 
-  // componentWillReceiveProps(props) {
-  //
-  // }
+  get facets() {
+    const { location: { latitude, longitude }, radius, type, minprice, maxprice, keywords, random } = this.state;
+    return {
+      location: `${latitude},${longitude}`, //: STRING, --> The desired location in "lat,long" format (default: "47.604204,-122.334583")
+      radius, //: STRING, --> Search radius in meters (default: "800")
+      type, //: STRING, --> Type of place (we really shouldn't need to change this from restaurant) (default: "restaurant")
+      minprice, //: STRING, --> Minimum price on 0 - 4 scale (default: "0")
+      maxprice, //: STRING, --> Maximum price on 0 - 4 scale (default: "4")
+      keywords, //: STRING or ARRAY OF STRINGS, --> Keyword(s) to be used in search (default: "")
+      random, //: BOOLEAN, --> Return a single random result from the returned list (default: false)
+    }
+  }
+
+  componentWillReceiveProps(props) {
+    if (props.places !== this.props.places) {
+      this.setState({ places: props.places });
+    }
+
+    if (props.location.latitude !== this.state.location.latitude || props.location.longitude !== this.state.location.longitude) {
+      this.setState({ location });
+
+      this.props.getPlaces(this.facets)
+    }
+  }
 
   // onChange(event) {
   //   const { value = '' } = event.target;
