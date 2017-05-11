@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 
 import { getLocation, setLocation } from '../actions';
 import { Main } from '../views';
-console.log(getLocation)
+
 class MainContainer extends Component {
   static propTypes = {
     location: PropTypes.object,

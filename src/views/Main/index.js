@@ -252,12 +252,7 @@ export default class MainView extends Component {
   render() {
     return (
       <form style={style}>
-        {this.props.location.latitude}
-        {/* {this.datePicker}
-        {this.addPallet}
-        {this.selections}
-        {this.review}
-        {this.finalize} */}
+        Latitude {this.props.location.latitude}
       </form>
     );
   }

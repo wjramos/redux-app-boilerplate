@@ -2,10 +2,9 @@ import 'isomorphic-fetch';
 import request from 'request-promise';
 
 export default (/* store */) => next => async action => {
-  if (action.middleware && action.middleware.includes('CALL_API')) {
-    const { types, options, uri, onComplete } = action.data;
+  const { middleware, types, options, uri, onComplete } = action
+  if (middleware === 'CALL_API') {
     const [requestType, successType, failureType] = types;
-
     next(Object.assign({}, action, { type: requestType }));
 
     try {

@@ -6,7 +6,7 @@ import thunk from 'redux-thunk';
 
 import rootReducer from '../reducers';
 import * as reducers from '../reducers/';
-import { api } from '../middleware';
+import { api, geolocate } from '../middleware';
 import { DevTools } from '../containers';
 
 export default function configureStore(history, initialState = {}) {
@@ -14,6 +14,7 @@ export default function configureStore(history, initialState = {}) {
     applyMiddleware(
       thunk,
       routerMiddleware(history),
+      geolocate,
       api,
       createLogger(),
     ),

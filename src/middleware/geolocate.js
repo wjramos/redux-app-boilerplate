@@ -18,8 +18,10 @@ function getLocation() {
 }
 
 export default (/* store */) => next => async action => {
-  const { types: [requestType, successType, failureType], middleware } = action;
+  const { types, middleware } = action;
+
   if (middleware === 'GEOLOCATE') {
+    const [requestType, successType, failureType] = types;
     next(Object.assign(
       {},
       action,

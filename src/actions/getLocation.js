@@ -1,6 +1,6 @@
 export default function getLocation() {
   return dispatch => dispatch({
-    middleware: ['GEOLOCATE'],
+    middleware: 'GEOLOCATE',
     types: [
       'LOCATION_REQUEST',
       'LOCATION_SUCCESS',
