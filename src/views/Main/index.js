@@ -65,7 +65,7 @@ export default class MainView extends Component {
   get facets() {
     const { location: { latitude, longitude }, radius, type, minprice, maxprice, keywords, random } = this.state;
     return {
-      location: `${latitude},${longitude}`, //: STRING, --> The desired location in "lat,long" format (default: "47.604204,-122.334583")
+      // location: `${latitude},${longitude}`, //: STRING, --> The desired location in "lat,long" format (default: "47.604204,-122.334583")
       radius, //: STRING, --> Search radius in meters (default: "800")
       type, //: STRING, --> Type of place (we really shouldn't need to change this from restaurant) (default: "restaurant")
       minprice, //: STRING, --> Minimum price on 0 - 4 scale (default: "0")
@@ -76,7 +76,7 @@ export default class MainView extends Component {
   }
 
   componentWillReceiveProps(props) {
-    const { places, location, value } = this.state;
+    const { places, location } = this.state;
     const diffLocation = props.location.latitude !== location.latitude || props.location.longitude !== location.longitude;
     const diffPlaces = props.places !== places;
 
@@ -85,7 +85,6 @@ export default class MainView extends Component {
     }
 
     if (diffLocation) {
-      this.props.getPlaces(this.facets);
       this.setState({ location: props.location });
     }
   }
@@ -96,7 +95,7 @@ export default class MainView extends Component {
 
     if (value) {
       this.timers.typing = setTimeout(() => {
-        this.props.getCoordinates(value);
+        this.props.getCoordinates(value, this.facets);
         this.setState({ fetching: true });
       }, 500);
     }

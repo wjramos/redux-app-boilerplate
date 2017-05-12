@@ -34,7 +34,8 @@ export default function locationReducer(state = NEW_YORK, { type, location, resp
     }
 
     if (type === 'LOCATION_GEOCODE_SUCCESS' || type === 'LOCATION_GEOCODE_CACHED') {
-      const { lat: latitude, lng: longitude } = response.results[0].geometry.location;
+      const [point] = response.results || [];
+      const { lat: latitude, lng: longitude } = point && point.geometry ? point.geometry.location : { lat: 0, lng: 0 };
       return { latitude, longitude };
     }
 
