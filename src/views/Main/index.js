@@ -11,12 +11,12 @@ export default class MainView extends Component {
     getLocation: PropTypes.func.isRequired,
     setLocation: PropTypes.func.isRequired,
     getPlaces: PropTypes.func.isRequired,
-    location: PropTypes.object.isRequired,
+    location: PropTypes.object,
     places: PropTypes.array,
     radius: PropTypes.number,
     minprice: PropTypes.number,
     maxPrice: PropTypes.number,
-    keywords: PropTypes.oneOfType([String, Array]),
+    keywords: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
     random: PropTypes.bool,
   }
 
@@ -56,14 +56,27 @@ export default class MainView extends Component {
   }
 
   componentWillReceiveProps(props) {
-    if (props.places !== this.props.places) {
+    const { places, location } = this.state;
+
+    if (
+      !places.length
+      // || props.location.latitude !== location.latitude
+      // || props.location.longitude !== location.longitude
+    ) {
+      this.props.getPlaces(this.facets);
+    }
+
+    if (props.places !== places) {
       this.setState({ places: props.places });
     }
 
-    if (props.location.latitude !== this.state.location.latitude || props.location.longitude !== this.state.location.longitude) {
+    if (
+      location
+      && props.location.latitude !== location.latitude
+      || props.location.longitude !== location.longitude
+    ) {
       this.setState({ location });
-
-      this.props.getPlaces(this.facets)
+      return;
     }
   }
 
@@ -287,9 +300,17 @@ export default class MainView extends Component {
 
   render() {
     return (
-      <form style={style}>
-        Latitude {this.props.location.latitude}
-      </form>
+      <ul>
+        <li>Latitude {this.props.location.latitude}</li>
+        <li>Longitude {this.props.location.longitude}</li>
+        <li>
+          <h3>Places</h3>
+          <ul>
+            {this.state.places.map(place => (<li>{place.name}</li>))}
+          </ul>
+        </li>
+
+      </ul>
     );
   }
 }

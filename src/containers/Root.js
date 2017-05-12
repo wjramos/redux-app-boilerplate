@@ -17,10 +17,10 @@ export default class Root extends Component {
     const { store, history } = this.props;
     return (
       <NetworkListenerProvider store={store}>
-        {/* <div> */}
+        <div>
           <Router history={history} routes={routes} />
-          {/* <DevTools />
-        </div> */}
+          <DevTools />
+        </div>
       </NetworkListenerProvider>
     );
   }

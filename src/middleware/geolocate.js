@@ -2,19 +2,19 @@ import 'isomorphic-fetch';
 import request from 'request-promise';
 
 const GEOLOCATE_OPTIONS = {
-  enableHighAccuracy: true,
+  // enableHighAccuracy: true,
   maximumAge: 30000,
   timeout: 27000,
 }
 
 function getLocation() {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) =>
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => resolve(coords),
       err => reject(err),
       GEOLOCATE_OPTIONS,
-    );
-  });
+    )
+  );
 }
 
 export default (/* store */) => next => async action => {
@@ -28,14 +28,11 @@ export default (/* store */) => next => async action => {
       { type: requestType }
     ));
 
+    let location;
+
     if (navigator.geolocation) {
       try {
-        const location = await getLocation();
-
-        return next({
-          type: successType,
-          location,
-        });
+        location = await getLocation();
       } catch (err) {
         return next({
           type: failureType,
@@ -43,8 +40,15 @@ export default (/* store */) => next => async action => {
         });
       }
     } else {
-      // Browser does not have geolocation, alternate method
+      // Browser does not have geolocation, use alternate method
     }
+
+    const { latitude, longitude } = location;
+
+    return next({
+      type: successType,
+      location: { latitude, longitude },
+    });
   }
 
   return next(action);

@@ -9,6 +9,7 @@ import * as reducers from '../reducers/';
 import { api, geolocate } from '../middleware';
 import { DevTools } from '../containers';
 
+const states = Object.keys(reducers).concat('offlineQueue');
 export default function configureStore(history, initialState = {}) {
   const enhancer = compose(
     applyMiddleware(
@@ -18,9 +19,7 @@ export default function configureStore(history, initialState = {}) {
       api,
       createLogger(),
     ),
-    persistState([
-      'offlineQueue',
-    ].concat(Object.keys(reducers))),
+    persistState(states),
     // Required! Enable Redux DevTools with the monitors you chose
     DevTools.instrument(),
   );

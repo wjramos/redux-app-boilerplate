@@ -1,13 +1,13 @@
-export default function placesReducer(state = [], { type, places, error }) {
+export default function placesReducer(state = [], { type, response, error }) {
   if (type.includes('PLACES_')) {
-    const newState = Object.assign({}, state);
+    const newState = state.slice();
 
     if (type === 'PLACES_REQUEST') {
       return state;
     }
 
     if (type === 'PLACES_SUCCESS') {
-      return places;
+      return response;
     }
 
     if (type === 'PLACES_FAILURE') {
@@ -16,9 +16,8 @@ export default function placesReducer(state = [], { type, places, error }) {
     }
 
     if (type === 'PLACES_SET') {
-      return places;
+      return response;
     }
-
   }
 
   return state;
