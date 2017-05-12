@@ -31,11 +31,10 @@ export default function (address, facets) {
     onComplete: ({ response }) => {
       const [point] = response.results || [];
       const { lat: latitude, lng: longitude } = point && point.geometry ? point.geometry.location : { lat: 0, lng: 0 };
-      
+
       cache.set(address, { response, expires: Date.now() + CACHE_TTL });
       // location: `${latitude},${longitude}`, //: STRING, --> The desired location in "lat,long" format (default: "47.604204,-122.334583")
-      const settings = Object.assign({}, { location: `${latitude},${longitude}` }, facets);
-      console.log(settings);
+      const settings = Object.assign({}, facets, { location: `${latitude},${longitude}` });
       return dispatch(getPlaces(settings));
     },
   });
