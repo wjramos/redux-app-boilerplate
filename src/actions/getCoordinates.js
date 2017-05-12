@@ -1,12 +1,30 @@
 const API_KEY = 'AIzaSyDwcKtZ5xsmrQgckjzK_IarTzZeFAPeMYE';
 const GEOCODE = `https://maps.googleapis.com/maps/api/geocode/json?key=${API_KEY}`;
 
-export default address => dispatch => dispatch({
-  middleware: 'API',
-  types: [
-    'GEOCODE_REQUEST',
-    'GEOCODE_SUCCESS',
-    'GEOCODE_FAILURE',
-  ],
-  uri: `${GEOCODE}&address=${address}`,
-});
+const CACHE_TTL = 30 * 60 * 1000; // 30 min
+const cache = new Map();
+
+export default function (address) {
+  const cached = cache.get(address);
+
+  if (cached && Date.now() < cached.expires) {
+    return {
+      type: 'LOCATION_GEOCODE_CACHED',
+      response: cached.response,
+    };
+  }
+
+  return dispatch => dispatch({
+    middleware: 'API',
+    types: [
+      'LOCATION_GEOCODE_REQUEST',
+      'LOCATION_GEOCODE_SUCCESS',
+      'LOCATION_GEOCODE_FAILURE',
+    ],
+    options: {
+      uri: `${GEOCODE}&address=${address}`,
+      json: true,
+    },
+    onComplete: ({ response }) => cache.set(address, { response, expires: Date.now() + CACHE_TTL }),
+  });
+}

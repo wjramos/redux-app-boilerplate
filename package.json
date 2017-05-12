@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "cross-env webpack-dev-server --port 3000 --inline --hot --progress --colors",
+    "start": "cross-env webpack-dev-server --port 3000 --inline --hot --progress --colors --https",
     "test": "npm run test:unit && npm run lint",
     "test:unit": "jest --silent --coverage --runInBand --config ./test/jest-config.json",
     "lint": "eslint ./src"

@@ -39,10 +39,6 @@ export default class MainView extends Component {
   onChange(event) {
     const { value = '' } = event.target;
 
-    if (value.length > 4) {
-      this.props.getCoordinates(value);
-    }
-
     if (!this.ref.input) {
       this.ref.input = event.target;
     }
@@ -59,8 +55,6 @@ export default class MainView extends Component {
 
   componentDidMount() {
     window.scroll(0, 0);
-
-    this.props.getLocation();
   }
 
   get facets() {
@@ -77,32 +71,36 @@ export default class MainView extends Component {
   }
 
   componentWillReceiveProps(props) {
-    const { places, location } = this.state;
+    const { places, location, value, fetching } = this.state;
+    const diffCoords = props.location.latitude !== location.latitude || props.location.longitude !== location.longitude;
+    const diffPlaces = props.places !== places;
 
-    if (
-      !places.length
-      // || props.location.latitude !== location.latitude
-      // || props.location.longitude !== location.longitude
-    ) {
-      this.props.getPlaces(this.facets);
+    if (!location) {
+      this.props.getLocation();
     }
 
-    if (props.places !== places) {
+    if (fetching && !diffCoords && !diffPlaces) {
+      this.setState({ fetching: false })
+    }
+
+    if (diffPlaces) {
       this.setState({ places: props.places });
     }
 
-    if (
-      location
-      && props.location.latitude !== location.latitude
-      || props.location.longitude !== location.longitude
-    ) {
-      this.setState({ location });
-      return;
+    if (diffCoords || location && !places) {
+      this.props.getPlaces(this.facets);
+      this.setState({ location: props.location, fetching: true });
     }
   }
 
   onChange(event) {
     const { value = '' } = event.target;
+
+    if (value && value.length > 4) {
+      this.props.getCoordinates(value);
+      this.setState({ fetching: true });
+    }
+
     if (!this.ref.input) {
       this.ref.input = event.target;
     }

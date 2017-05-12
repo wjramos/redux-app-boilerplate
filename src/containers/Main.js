@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { getCoordinates, getLocation, setLocation, getPlaces } from '../actions';
+import * as actions from '../actions';
 import { Main } from '../views';
 
 class MainContainer extends Component {
@@ -33,12 +33,12 @@ function mapStateToProps({
 }
 
 function mapDispatchToProps(dispatch) {
-  return {
-    getCoordinates: bindActionCreators(getCoordinates, dispatch),
-    getLocation: bindActionCreators(getLocation, dispatch),
-    setLocation: bindActionCreators(setLocation, dispatch),
-    getPlaces: bindActionCreators(getPlaces, dispatch),
-  };
+  return Object.keys(actions).reduce(
+    (obj, action) => {
+      obj[action] = bindActionCreators(actions[action], dispatch)
+      return obj;
+    }, {}
+  );
 }
 
 export default connect(

@@ -8,7 +8,7 @@ const SEATTLE = {
   longitude: -122.6059982,
 };
 
-export default function locationReducer(state = NEW_YORK, { type, location, error }) {
+export default function locationReducer(state = NEW_YORK, { type, location, response, error }) {
   if (type.includes('LOCATION_')) {
     const newState = Object.assign({}, state);
 
@@ -29,6 +29,19 @@ export default function locationReducer(state = NEW_YORK, { type, location, erro
       return location;
     }
 
+    if (type === 'LOCATION_GEOCODE_REQUEST') {
+      return state;
+    }
+
+    if (type === 'LOCATION_GEOCODE_SUCCESS' || type === 'LOCATION_GEOCODE_CACHED') {
+      const { lat: latitude, lng: longitude } = response.results[0].geometry.location;
+      return { latitude, longitude };
+    }
+
+    if (type === 'LOCATION_GEOCODE_FAILURE') {
+      console.error(error);
+      return state;
+    }
   }
 
   return state;
