@@ -34,9 +34,10 @@ export default function locationReducer(state = NEW_YORK, { type, location, resp
     }
 
     if (type === 'LOCATION_GEOCODE_SUCCESS' || type === 'LOCATION_GEOCODE_CACHED') {
-      const [point] = response.results || [];
-      const { lat: latitude, lng: longitude } = point && point.geometry ? point.geometry.location : { lat: 0, lng: 0 };
-      return { latitude, longitude };
+      const [firstResult] = response.results || [];
+      const { address_components: [names], geometry: { location: { lat: latitude = 0, lng: longitude = 0 } = {} } = {} } = firstResult;
+      const { short_name: name } = names;
+      return { name, latitude, longitude };
     }
 
     if (type === 'LOCATION_GEOCODE_FAILURE') {

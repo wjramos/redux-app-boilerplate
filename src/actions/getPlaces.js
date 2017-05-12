@@ -1,4 +1,4 @@
-// const API_KEY = 'AIzaSyAh4C89mQWly4_IIVPMHWdFwTMQeEsErg8';
+// const API_KEY = 'AIzaSyAFf0zyzWR41ZaKQHv3gJ16FUgjTHbI0KA';
 // const PLACES_API = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=${API_KEY}`;
 const uri = 'https://bkr58xmmj2.execute-api.us-west-1.amazonaws.com/prod/places';
 

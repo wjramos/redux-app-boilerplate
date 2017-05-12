@@ -1,7 +1,7 @@
 import { dispatch } from 'react-redux';
 import { getPlaces } from './';
 
-const API_KEY = 'AIzaSyAh4C89mQWly4_IIVPMHWdFwTMQeEsErg8';
+const API_KEY = 'AIzaSyAFf0zyzWR41ZaKQHv3gJ16FUgjTHbI0KA';
 const GEOCODE = `https://maps.googleapis.com/maps/api/geocode/json?key=${API_KEY}`;
 
 const CACHE_TTL = 30 * 60 * 1000; // 30 min

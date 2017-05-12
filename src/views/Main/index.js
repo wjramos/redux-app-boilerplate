@@ -4,6 +4,8 @@ import React, { Component, PropTypes } from 'react';
 import style from './style';
 import { Input, Slider, Rating } from '../../components';
 
+const API_KEY = 'AIzaSyAFf0zyzWR41ZaKQHv3gJ16FUgjTHbI0KA';
+
 // @Radium
 export default class MainView extends Component {
   static propTypes = {
@@ -100,9 +102,9 @@ export default class MainView extends Component {
       }, 500);
     }
 
-    if (!this.ref.input) {
-      this.ref.input = event.target;
-    }
+    // if (!this.ref.input) {
+    //   this.ref.input = event.target;
+    // }
 
     if (value !== this.state.value) {
       this.setState({ value });
@@ -113,9 +115,9 @@ export default class MainView extends Component {
     const { value = '' } = event.target;
     clearTimeout(this.timers.typing);
 
-    if (!this.ref.input) {
-      this.ref.input = event.target;
-    }
+    // if (!this.ref.input) {
+    //   this.ref.input = event.target;
+    // }
 
     const keywords = value.split(' ');
     if (keywords !== this.state.keywords) {
@@ -128,24 +130,11 @@ export default class MainView extends Component {
     }
   }
 
-  onChange(event) {
-    const { value = '' } = event.target;
-    clearTimeout(this.timers.typing);
+  onChangeMaxPrice(event) {
+    const { value: maxprice = 4 } = event.target;
 
-    if (value) {
-      this.timers.typing = setTimeout(() => {
-        this.props.getPlaces(this.facets);
-        this.setState({ fetching: true });
-      }, 500);
-    }
-
-    if (!this.ref.input) {
-      this.ref.input = event.target;
-    }
-
-    if (value !== this.state.value) {
-      this.setState({ value });
-    }
+    this.props.getPlaces(Object.assign({}, this.facets, { maxprice }));
+    this.setState({ maxprice });
   }
 
   get search() {
@@ -154,6 +143,7 @@ export default class MainView extends Component {
         onChange={::this.onSearchChange}
         placeholder={'Find a location'}
         onClick={::this.onClickInput}
+        value={this.state.value}
       />
     );
   }
@@ -163,18 +153,33 @@ export default class MainView extends Component {
       <Input
         onChange={::this.onKeywordChange}
         placeholder={'Keywords'}
+        value={this.state.keywords.join(' ')}
       />
     );
   }
 
   get places() {
     return (
-      <ul style={{ marginBottom: 50 }}>
+      <ul>
         {this.state.places.map((place, key) => (
-          <li key={key} style={{ marginBottom: 20 }}>
-            <h4 style={{ fontWeight: 700, fontSize: 24 }}>{place.name}</h4>
-            <span style={{ marginRight: 10 }}>{place.rating.toFixed(1)} / 5</span>
-            <Rating rating={place.price_level} />
+          <li key={key} style={{ display: 'flex', flexFlow: 'row nowrap', borderBottom: '1px solid #ccc' }}>
+            <aside
+              style={{ width: 100, paddingBottom: '100%', position: 'relative', overflow: 'hidden', opacity: 0.999 }}
+            >
+              <img
+                style={{ width: '100%', position: 'absolute', top: '100%', left: '100%', transform: 'translate(-100%, -100%)'}}
+                src={`https://maps.googleapis.com/maps/api/place/photo?photoreference=${place.photos[0].photo_reference}&key=${API_KEY}&maxwidth=100`}
+              />
+            </aside>
+            <main style={{ padding: '20px 10px' }}>
+              <h4 style={{ fontWeight: 700, fontSize: 24 }}>
+                {place.name}
+              </h4>
+              <span style={{ marginRight: 10 }}>
+                {place.rating.toFixed(1)} / 5
+              </span>
+              <Rating rating={place.price_level} />
+            </main>
           </li>
         ))}
       </ul>
@@ -189,25 +194,59 @@ export default class MainView extends Component {
     );
   }
 
+  listItemString(list) {
+    return [
+      list.slice(0, -1).join(', '),
+      list.slice(-1)[0]
+    ].map(word =>
+      word.charAt(0).toUpperCase() + word.slice(1)
+    ).join(
+      list.length > 1
+      ? ' and '
+      : ''
+    );
+  }
+
+  get placesSection() {
+    if (this.state.places) {
+      return (
+        <section
+          style={{ marginBottom: 50 }}
+        >
+          <h2 style={{ marginBottom: 10 }}>
+            {this.state.keywords.length ? this.listItemString(this.state.keywords) : 'Places To Eat'} {this.state.location.name ? `Near ${this.state.location.name}` : 'Nearby'}
+          </h2>
+          {this.places}
+        </section>
+      );
+    }
+
+    return null;
+  }
+
   render() {
     return (
-      <ul>
-        <li style={{ marginBottom: 50 }}>
-          <h2 style={{}}>Search By Location</h2>
+      <main>
+        <section
+          // style={{ marginBottom: 50 }}
+        >
+          <h2 style={{ marginBottom: 10 }}>
+            Search By Location
+          </h2>
           {this.search}
-        </li>
+        </section>
 
-        <li>
-          <h2>Filter</h2>
+        <section
+          // style={{ marginBottom: 50 }}
+        >
+          <h2 style={{ marginBottom: 10 }}>
+            Filter
+          </h2>
           {this.filters}
-        </li>
+        </section>
         {/* <Slider onChange={::this.onPriceChange} min={0} max={4} lowerPos={this.state.minprice} upperPos={this.state.maxprice} /> */}
-        <li style={{ marginBottom: 50 }}>
-          <h2 style={{}}>Nearby Places To Eat</h2>
-          {this.places}
-        </li>
-
-      </ul>
+        {this.placesSection}
+      </main>
     );
   }
 }
