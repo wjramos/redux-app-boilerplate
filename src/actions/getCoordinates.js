@@ -1,4 +1,4 @@
-const API_KEY = 'AIzaSyDwcKtZ5xsmrQgckjzK_IarTzZeFAPeMYE';
+const API_KEY = 'AIzaSyAh4C89mQWly4_IIVPMHWdFwTMQeEsErg8';
 const GEOCODE = `https://maps.googleapis.com/maps/api/geocode/json?key=${API_KEY}`;
 
 const CACHE_TTL = 30 * 60 * 1000; // 30 min

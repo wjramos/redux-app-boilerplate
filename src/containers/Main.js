@@ -12,6 +12,7 @@ class MainContainer extends Component {
     setLocation: PropTypes.func.isRequired,
     getPlaces: PropTypes.func.isRequired,
     location: PropTypes.object,
+    places: PropTypes.places,
   }
 
   render() {

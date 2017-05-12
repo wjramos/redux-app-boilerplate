@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 // import Radium from 'radium';
 
 import style from './style';
-import { Input } from '../../components';
+import { Input, Slider } from '../../components';
 
 // @Radium
 export default class MainView extends Component {
@@ -33,6 +33,7 @@ export default class MainView extends Component {
   constructor(props) {
     super(props);
     this.ref = {};
+    this.timers = {};
     this.state = props;
   }
 
@@ -49,12 +50,16 @@ export default class MainView extends Component {
   }
 
   onClickInput(event) {
-    event.target.value = '';
-    this.setState({ value: '' });
+    // event.target.value = '';
+    // this.setState({ value: '' });
   }
 
   componentDidMount() {
     window.scroll(0, 0);
+
+    if (!this.state.location) {
+      this.props.getLocation();
+    }
   }
 
   get facets() {
@@ -71,34 +76,29 @@ export default class MainView extends Component {
   }
 
   componentWillReceiveProps(props) {
-    const { places, location, value, fetching } = this.state;
-    const diffCoords = props.location.latitude !== location.latitude || props.location.longitude !== location.longitude;
+    const { places, location, value } = this.state;
+    const diffLocation = props.location.latitude !== location.latitude || props.location.longitude !== location.longitude;
     const diffPlaces = props.places !== places;
-
-    if (!location) {
-      this.props.getLocation();
-    }
-
-    if (fetching && !diffCoords && !diffPlaces) {
-      this.setState({ fetching: false })
-    }
 
     if (diffPlaces) {
       this.setState({ places: props.places });
     }
 
-    if (diffCoords || location && !places) {
+    if (diffLocation) {
       this.props.getPlaces(this.facets);
-      this.setState({ location: props.location, fetching: true });
+      this.setState({ location: props.location });
     }
   }
 
   onChange(event) {
     const { value = '' } = event.target;
+    clearTimeout(this.timers.typing);
 
-    if (value && value.length > 4) {
-      this.props.getCoordinates(value);
-      this.setState({ fetching: true });
+    if (value) {
+      this.timers.typing = setTimeout(() => {
+        this.props.getCoordinates(value);
+        this.setState({ fetching: true });
+      }, 500);
     }
 
     if (!this.ref.input) {
@@ -333,6 +333,7 @@ export default class MainView extends Component {
         <li>Latitude {this.props.location.latitude}</li>
         <li>Longitude {this.props.location.longitude}</li>
         {this.search}
+        {/* <Slider onChange={::this.onPriceChange} min={0} max={4} lowerPos={this.state.minprice} upperPos={this.state.maxprice} /> */}
         <li>
           <h3>Places</h3>
           <ul>
