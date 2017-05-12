@@ -6,19 +6,20 @@ import thunk from 'redux-thunk';
 
 import rootReducer from '../reducers';
 import * as reducers from '../reducers/';
-import { api, geolocate } from '../middleware';
+import * as middleware from '../middleware';
 import { DevTools } from '../containers';
 
 const states = Object.keys(reducers).concat('offlineQueue');
+
 export default function configureStore(history, initialState = {}) {
+  const middlewares = [
+    thunk,
+    createLogger(),
+    routerMiddleware(history),
+  ].concat(Object.keys(middleware).map(mid => middleware[mid]));
+
   const enhancer = compose(
-    applyMiddleware(
-      thunk,
-      routerMiddleware(history),
-      geolocate,
-      api,
-      createLogger(),
-    ),
+    applyMiddleware(...middlewares),
     persistState(states),
     // Required! Enable Redux DevTools with the monitors you chose
     DevTools.instrument(),

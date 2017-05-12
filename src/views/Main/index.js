@@ -2,12 +2,12 @@ import React, { Component, PropTypes } from 'react';
 // import Radium from 'radium';
 
 import style from './style';
-// import { Table, Select, Banner, Button, Section, Input } from '../../components';
+import { Input } from '../../components';
 
 // @Radium
 export default class MainView extends Component {
   static propTypes = {
-    places: PropTypes.array.isRequired,
+    getCoordinates: PropTypes.func.isRequired,
     getLocation: PropTypes.func.isRequired,
     setLocation: PropTypes.func.isRequired,
     getPlaces: PropTypes.func.isRequired,
@@ -34,6 +34,27 @@ export default class MainView extends Component {
     super(props);
     this.ref = {};
     this.state = props;
+  }
+
+  onChange(event) {
+    const { value = '' } = event.target;
+
+    if (value.length > 4) {
+      this.props.getCoordinates(value);
+    }
+
+    if (!this.ref.input) {
+      this.ref.input = event.target;
+    }
+
+    if (value !== this.state.value) {
+      this.setState({ value });
+    }
+  }
+
+  onClickInput(event) {
+    event.target.value = '';
+    this.setState({ value: '' });
   }
 
   componentDidMount() {
@@ -80,17 +101,17 @@ export default class MainView extends Component {
     }
   }
 
-  // onChange(event) {
-  //   const { value = '' } = event.target;
-  //   if (!this.ref.input) {
-  //     this.ref.input = event.target;
-  //   }
-  //
-  //   if (value !== this.state.value) {
-  //     this.setState({ value });
-  //   }
-  // }
-  //
+  onChange(event) {
+    const { value = '' } = event.target;
+    if (!this.ref.input) {
+      this.ref.input = event.target;
+    }
+
+    if (value !== this.state.value) {
+      this.setState({ value });
+    }
+  }
+
   // onSelect(event) {
   //   const { value = '' } = event.target;
   //   if (!this.ref.select) {
@@ -298,11 +319,22 @@ export default class MainView extends Component {
   //   );
   // }
 
+  get search() {
+    return (
+      <Input
+        onChange={::this.onChange}
+        placeholder={'Find a location'}
+        onClick={::this.onClickInput}
+      />
+    );
+  }
+
   render() {
     return (
       <ul>
         <li>Latitude {this.props.location.latitude}</li>
         <li>Longitude {this.props.location.longitude}</li>
+        {this.search}
         <li>
           <h3>Places</h3>
           <ul>
