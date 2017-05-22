@@ -9,6 +9,7 @@
     "lint": "eslint ./src"
   },
   "dependencies": {
+    "aws-sdk": "^2.50.0",
     "babel-core": "^6.13.2",
     "cross-env": "^1.0.7",
     "extract-text-webpack-plugin": "^2.1.0",

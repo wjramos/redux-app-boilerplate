@@ -1,3 +1,1 @@
-export default {
-  width: '70%',
-};
+export default {};

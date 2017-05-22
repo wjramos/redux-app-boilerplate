@@ -3,44 +3,46 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import * as actions from '../actions';
+import * as reducers from '../reducers/';
 import { Main } from '../views';
 
+const actionProps = Object.keys(actions).reduce((obj, action) => {
+  obj[action] = PropTypes.func.isRequired;
+  return obj;
+}, {});
+
+const stateProps = Object.keys(reducers).reduce((obj, state) => {
+  const type = Array.isArray(reducers[state].initialState) ? 'array' : typeof reducers[state].initialState;
+
+  obj[state] = PropTypes[type];
+
+  return obj;
+}, {});
+
 class MainContainer extends Component {
-  static propTypes = {
-    getCoordinates: PropTypes.func.isRequired,
-    getLocation: PropTypes.func.isRequired,
-    setLocation: PropTypes.func.isRequired,
-    getPlaces: PropTypes.func.isRequired,
-    location: PropTypes.object,
-    places: PropTypes.places,
+  static propTypes = Object.assign({}, actionProps, stateProps);
+
+  componentDidMount() {
+    if (!Object.keys(this.props.tracks)) {
+      this.props.getTracks();
+    }
   }
 
   render() {
     return (
-      <Main {...this.props} />
+      <Main
+        {...this.props}
+      />
     );
   }
 }
 
-function mapStateToProps({
-  location,
-  places,
-}) {
+const mapStateToProps = ({ tracks }) => ({ tracks });
 
-  return {
-    location,
-    places,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return Object.keys(actions).reduce(
-    (obj, action) => {
-      obj[action] = bindActionCreators(actions[action], dispatch)
-      return obj;
-    }, {}
-  );
-}
+const mapDispatchToProps = dispatch => Object.keys(actions).reduce((obj, action) => {
+  obj[action] = bindActionCreators(actions[action], dispatch)
+  return obj;
+}, {})
 
 export default connect(
   mapStateToProps,

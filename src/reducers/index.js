@@ -1,2 +1,1 @@
-export location from './location';
-export places from './places';
+export tracks from './tracks';

@@ -1,2 +1,2 @@
 export api from './api';
-export geolocate from './geolocate';
+export s3 from './s3';
