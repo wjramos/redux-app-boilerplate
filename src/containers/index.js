@@ -1,3 +1,3 @@
 export DevTools from './DevTools';
-export Main from './Main';
+export Issues from './Issues';
 export Root from './Root';

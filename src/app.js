@@ -9,13 +9,14 @@ import style from './style';
 import { Root } from './containers';
 import configureStore from './stores';
 
+/* Create a Redux store holding the state of app. */
+const reduxStore = configureStore();
+
+/* Create an enhanced history that syncs navigation events with the store. */
+const history = syncHistoryWithStore(hashHistory, reduxStore);
+
 function init() {
   FastClick.attach(document.body);
-  /* Create a Redux store holding the state of app. */
-  const reduxStore = configureStore();
-
-  /* Create an enhanced history that syncs navigation events with the store. */
-  const history = syncHistoryWithStore(hashHistory, reduxStore);
 
   /* Render Root component */
   render(
@@ -28,8 +29,9 @@ function init() {
     document.getElementById('app'),
   );
 
-  window.addEventListener('statusTap', () => window.scroll(0, 0));
 }
+
+window.addEventListener('statusTap', () => window.scroll(0, 0));
 
 /* Eliminating 300ms delay between a physical tap and the firing of event. */
 if ('addEventListener' in document) {

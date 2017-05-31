@@ -1,0 +1,50 @@
+import { PropTypes } from 'react';
+import { bindActionCreators } from 'redux';
+
+import * as actions from './actions';
+import * as reducers from './reducers/';
+
+const actionProps = Object.keys(actions).reduce((obj, action) => {
+  obj[action] = PropTypes.func.isRequired;
+  return obj;
+}, {});
+
+const stateProps = Object.keys(reducers).reduce((obj, state) => {
+  const type = Array.isArray(reducers[state].initialState) ? 'array' : typeof reducers[state].initialState;
+  let propType = type;
+
+  if (type === 'function') {
+    propType = 'func';
+  }
+
+  if (type === 'boolean') {
+    propType = 'bool';
+  }
+
+  obj[state] = PropTypes[propType];
+
+  return obj;
+}, {});
+
+export const propTypes = Object.assign({}, actionProps, stateProps);
+
+export function mapDispatchToProps(dispatch) {
+  return Object.keys(actions).reduce((obj, action) => {
+    obj[action] = bindActionCreators(actions[action], dispatch)
+    return obj;
+  }, {});
+}
+
+export function mapStateToProps({ downloads, issue, issues, brand, brands, edition, editions, preview, qa }) {
+  return {
+    downloads,
+    issue,
+    issues,
+    brand,
+    brands,
+    edition,
+    editions,
+    preview,
+    qa,
+  };
+}

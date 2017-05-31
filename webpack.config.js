@@ -3,10 +3,10 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-const PRODENV = process.env.NODE_ENV === 'production';
+const isProd = process.env.NODE_ENV === 'production';
 
 const webpackConfig = {
-  devtool: !PRODENV ? 'source-map' : false,
+  devtool: !isProd ? 'source-map' : false,
   devServer: {
     host: '0.0.0.0',
     noInfo: true,
@@ -39,12 +39,13 @@ const webpackConfig = {
     }),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
+    new ExtractTextPlugin('bundle.css'),
     new HtmlWebpackPlugin({
       minify: {},
       template: './src/index.ejs',
       inject: 'body',
     }),
-  ].concat(PRODENV ? [
+  ].concat(isProd ? [
     new webpack.optimize.UglifyJsPlugin({
       output: { comments: false },
       compress: { warnings: false },
@@ -62,10 +63,13 @@ const webpackConfig = {
           plugins: ['transform-decorators-legacy'],
         },
       },
-      // {
-      //   test: /\.css$/,
-      //   loader: ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader' }),
-      // },
+      {
+        test: /\.css$/,
+        loader: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: 'css-loader'
+        }),
+      },
       // {
       //   test: /\.(png|jpg)$/,
       //   loader: 'url?limit=8192',

@@ -1,41 +1,59 @@
 import 'isomorphic-fetch';
 import request from 'request-promise';
 
-export default (/* store */) => next => async action => {
-  const { middleware, types, options, uri, onComplete } = action;
+import { PROXY } from './constants';
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 
-  if (middleware === 'API') {
+export default (/* store */) => next => async action => {
+  if (action.middleware === 'API') {
+    const { types, options, uri, onComplete, proxy = true } = action;
     const [requestType, successType, failureType] = types;
-    next(Object.assign(
-      {},
-      action,
-      { type: requestType }
-    ));
+
+    next(Object.assign({}, action, { type: requestType }));
 
     try {
-      const response = await request(options || uri);
-
-      if (onComplete) {
-        onComplete({ response/*, statusCode*/});
+      let result;
+      if (proxy) {
+        result = await request({
+          uri: PROXY.URI,
+          method: 'POST',
+          json: true,
+          body: options || { uri },
+          headers: {
+            'x-api-key': PROXY.TOKEN,
+          },
+        });
+      } else {
+        result = await request(options || uri);
       }
 
-      return next({
+      while (typeof result === 'string') {
+        result = JSON.parse(result);
+      }
+
+      const { statusCode, err, errorMessage, body } = result;
+      const response = body && typeof body === 'string' ? JSON.parse(body) : body || result;
+
+      if (response.errorMessage) {
+        throw response.errorMessage;
+      }
+
+      next({
         type: successType,
         response,
       });
+
+      if (onComplete) {
+        onComplete({ response, statusCode });
+      }
+
+      return null;
     } catch (e) {
       return next({
         type: failureType,
-        error: e.message || 'Something bad happened',
+        error: e.message || e,
       });
     }
-
-    // if (err || (statusCode && (statusCode < 200 || statusCode > 299))) {
-    //   return next({
-    //     type: failureType,
-    //     response,
-    //   });
-    // }
   }
 
   return next(action);

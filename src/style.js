@@ -84,7 +84,4 @@ export default {
   'tr td': {
     borderBottom: '.1rem solid #ccc',
   },
-  'fieldset, section': {
-    padding: '1.5rem 5rem',
-  },
 };
