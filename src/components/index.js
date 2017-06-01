@@ -1,7 +1,9 @@
 export LazyTrigger from './lazy-trigger';
 export ProgressBar from './progress-bar';
 export Placeholder from './placeholder';
+export IssueCover from './issue-cover';
 export Accordion from './accordion';
+export Toggle from './toggle';
 export Select from './select';
 export Sticky from './sticky';
 export Button from './button';
@@ -9,3 +11,4 @@ export Badge from './badge';
 export Table from './table';
 export Input from './input';
 export Card from './card';
+export Grid from './grid';

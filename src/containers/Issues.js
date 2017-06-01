@@ -42,9 +42,10 @@ class IssuesContainer extends Component {
       props.brand !== this.props.brand
       || props.edition !== this.props.edition
       || props.preview !== this.props.preview
+      || props.qa !== this.props.qa
     ) {
       this.setState({ offset: 0 });
-      this.props.clearIssues();
+      this.props.clearIssues(props.brand);
       this.props.getIssues(props);
     }
   }

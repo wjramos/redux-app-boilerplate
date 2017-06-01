@@ -1,5 +1,5 @@
 export default {
-  list: {
+  grid: {
     display: 'flex',
     flexFlow: 'row wrap',
     padding: '4vh 4vw',

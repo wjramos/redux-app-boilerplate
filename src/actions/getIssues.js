@@ -1,19 +1,20 @@
 import { CAAS } from './constants';
 
-export default ({ brand, limit, offset, edition, preview, qa }) => dispatch => dispatch({
+export default ({ brand, limit = 10, offset = 0, edition, preview, qa }) => dispatch => dispatch({
   middleware: 'API',
   types: [
     'ISSUES_REQUEST',
     'ISSUES_SUCCESS',
     'ISSUES_FAILURE',
   ],
+  brand,
   options: {
     method: 'POST',
     uri: CAAS.URI + (qa ? CAAS.TLD.QA : CAAS.TLD.PROD) + '/search',
     json: true,
     body: {
       type: 'issue',
-      provider: (qa ? 'xip' : 'internal_typed_index'),
+      provider: 'xip',//(qa ? 'xip' : 'internal_typed_index'),
       follow: [
         'asset_path',
         'asset_path_signed',

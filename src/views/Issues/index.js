@@ -1,43 +1,39 @@
 import React, { Component } from 'react';
 import { SpinLoader } from 'react-css-loaders';
-import Radium from 'radium';
 
-import { LazyTrigger, Card, Placeholder, ProgressBar, Sticky, Badge, Select } from '../../components';
+import { LazyTrigger, Card, Placeholder, ProgressBar, Sticky, Badge, Select, Grid, Toggle, IssueCover } from '../../components';
 import { propTypes } from '../../util';
-import style from './style';
 
-@Radium
 export default class IssuesView extends Component {
   static propTypes = propTypes;
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      issues: props.issues,
-      noLoad: props.noLoad,
-    };
-  }
-
-  componentWillReceiveProps(props) {
-    if (props.issues !== this.state.issues) {
-      this.setState({ issues: props.issues });
-    }
-
-    if (props.noLoad !== this.state.noLoad) {
-      this.setState({ noLoad: props.noLoad });
-    }
-  }
 
   onBrandSelect(event) {
     const { value = '' } = event.target;
     this.props.setBrand(value);
   }
 
+  onEditionSelect(event) {
+    const { value = '' } = event.target;
+    this.props.setEdition(value);
+  }
+
+  onQaToggle() {
+    this.props.setQa(!this.props.qa);
+  }
+
+  onPreviewToggle() {
+    this.props.setPreview(!this.props.preview);
+  }
+
+  onScrollBottom() {
+    this.props.getIssues(this.props)
+  }
+
   get trigger() {
-    if (this.props.brand && !this.state.noLoad) {
+    if (this.props.brand && !this.props.noLoad) {
       return (
         <LazyTrigger
-          onScreenEnter={() => this.props.getIssues(this.props)}
+          onScreenEnter={::this.onScrollBottom}
           threshold={80}
         />
       );
@@ -47,45 +43,91 @@ export default class IssuesView extends Component {
   }
 
   get issues() {
-    if (this.state.issues.length) {
+    if (this.props.issues[this.props.brand] && this.props.issues[this.props.brand].length) {
       return (
-        <ul style={style.list}>
-          {this.state.issues.map((issue, key) => (
-            <li key={key} style={style.item}>
-              <Badge status={this.props.downloads[issue.$.id] === 100 ? 'success' : null} />
-              <Card onClick={() => {}}>
-                <Placeholder src={issue.asset_thumbnail.asset_path_signed} />
-                <h3>
-                  {issue.$name || issue.issue_coverDisplayDate}
-                </h3>
-                <Sticky>
-                  <ProgressBar percent={this.props.downloads[issue.$.id] > 0 && this.props.downloads[issue.$.id] < 100} />
-                </Sticky>
-              </Card>
-            </li>
+        <Grid>
+          {this.props.issues[this.props.brand].map((issue, key) => (
+            <IssueCover
+              key={key}
+              issue={issue}
+              percent={this.props.downloads[issue.$.id]}
+            />
           ))}
-        </ul>
+        </Grid>
       );
     }
 
     return (
-      <SpinLoader color="#0197cb" size={6} />
+      <SpinLoader
+        color="#0197cb"
+        size={6}
+      />
     );
   }
 
   get brandSelect() {
+    if (this.props.brands.length) {
+      return (
+        <Select
+          value={this.props.brand}
+          options={this.props.brands}
+          onChange={::this.onBrandSelect}
+        />
+      );
+    }
+
+    return null;
+  }
+
+  get editionSelect() {
+    if (this.props.editions.length) {
+      return (
+        <Select
+          value={this.props.edition}
+          options={this.props.editions}
+          onChange={::this.onEditionSelect}
+        />
+      );
+    }
+
+    return null;
+  }
+
+  get qaToggle() {
     return (
-      <Select
-        options={this.props.brands}
-        onChange={::this.onBrandSelect}
+      <Toggle
+        id={'qa'}
+        active={this.props.qa}
+        onChange={::this.onQaToggle}
       />
+    );
+  }
+
+  get previewToggle() {
+    return (
+      <Toggle
+        id={'preview'}
+        active={this.props.preview}
+        onChange={::this.onPreviewToggle}
+      />
+    );
+  }
+
+  get filters() {
+    return (
+      <section>
+        {this.brandSelect}
+        {this.editionSelect}
+        {this.qaToggle}
+        {this.previewToggle}
+      </section>
     );
   }
 
   render() {
     return (
       <main>
-        {this.brandSelect}
+        {this.filters}
         {this.issues}
         {this.trigger}
       </main>

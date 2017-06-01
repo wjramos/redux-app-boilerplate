@@ -20,12 +20,12 @@ export default ({
   style,
 }) => (
   <select
+    value={value}
     onChange={onChange}
     required={required}
     disabled={disabled}
     multiple={multiple}
     autoFocus={autoFocus}
-    value={value}
     style={Object.assign({}, select, style)}
   >
     {options.map((val, key) => (
