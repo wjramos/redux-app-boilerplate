@@ -1,6 +1,6 @@
 const INITIAL_STATE = true;
 
-export default function brandReducer(state = INITIAL_STATE, { type, preview }) {
+export default function previewReducer(state = INITIAL_STATE, { type, preview }) {
   if (type.includes('PREVIEW_')) {
     if (type === 'PREVIEW_SET') {
       return preview;
@@ -10,4 +10,4 @@ export default function brandReducer(state = INITIAL_STATE, { type, preview }) {
   return state;
 }
 
-brandReducer.initialState = INITIAL_STATE;
+previewReducer.initialState = INITIAL_STATE;

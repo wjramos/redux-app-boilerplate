@@ -13,8 +13,8 @@ export default function issuesReducer(state = INITIAL_STATE, { type, response, e
     }
 
     if (type === 'ISSUES_SUCCESS') {
-      if (response.issues) {
-        return [...new Set(newState.concat(response.issues))];
+      if (response.entities) {
+        return [...new Set(newState.concat(response.entities))];
       }
     }
 

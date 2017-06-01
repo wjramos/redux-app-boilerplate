@@ -1,6 +1,6 @@
 import { CAAS } from './constants';
 
-export default ({ brand, limit = 10, offset = 0, edition, preview, prod }) => dispatch => dispatch({
+export default ({ brand, limit, offset, edition, preview, qa }) => dispatch => dispatch({
   middleware: 'API',
   types: [
     'ISSUES_REQUEST',
@@ -9,10 +9,28 @@ export default ({ brand, limit = 10, offset = 0, edition, preview, prod }) => di
   ],
   options: {
     method: 'POST',
-    uri: CAAS.URI + (prod ? CAAS.TLD.PROD : CAAS.TLD.QA) + '/search',
+    uri: CAAS.URI + (qa ? CAAS.TLD.QA : CAAS.TLD.PROD) + '/search',
     json: true,
     body: {
+      type: 'issue',
+      provider: (qa ? 'xip' : 'internal_typed_index'),
+      follow: [
+        'asset_path',
+        'asset_path_signed',
+        'asset_path_expiration',
+        'asset_thumbnail',
+        'issue_pdf',
+        // 'issue_brand',
+      ],
       query: {
+        size: limit,
+        from: offset,
+        sort: {
+          issue_date: {
+            unmapped_type: 'long',
+            order: 'desc',
+          },
+        },
         query: {
           constant_score: {
             filter: {
@@ -20,9 +38,11 @@ export default ({ brand, limit = 10, offset = 0, edition, preview, prod }) => di
                 {
                   term: { brand },
                 },
-                (edition ? {
-                  term: { edition },
-                } : {}),
+                (
+                  edition
+                  ? { term: { edition } }
+                  : {}
+                ),
                 {
                   exists: {
                     field: 'issue_pdf',
@@ -37,28 +57,10 @@ export default ({ brand, limit = 10, offset = 0, edition, preview, prod }) => di
             },
           },
         },
-        sort: {
-          issue_date: {
-            unmapped_type: 'long',
-            order: 'desc',
-          },
-          size: limit,
-          from: offset,
-        },
-        type: 'issue',
-        provider: 'xip',
-        follow: [
-          'asset_path',
-          'asset_path_signed',
-          'asset_path_expiration',
-          'asset_thumbnail',
-          'issue_pdf',
-          // 'issue_brand',
-        ],
       },
     },
     headers: {
-      'x-api-key': (prod ? CAAS.TOKEN.PROD : CAAS.TOKEN.QA),
+      'x-api-key': (qa ? CAAS.TOKEN.QA : CAAS.TOKEN.PROD),
     },
   },
 });

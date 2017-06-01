@@ -24,6 +24,10 @@ class IssuesContainer extends Component {
   }
 
   componentWillMount() {
+    if (!this.props.brands.length) {
+      this.props.getBrands(this.props);
+    }
+
     if (this.props.brand && !this.props.issues.length) {
       this.props.getIssues(this.props);
     }

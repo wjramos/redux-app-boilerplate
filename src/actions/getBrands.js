@@ -1,6 +1,6 @@
 import { CAAS } from './constants';
 
-export default ({ prod }) => dispatch => dispatch({
+export default ({ qa }) => dispatch => dispatch({
   middleware: 'API',
   types: [
     'BRANDS_REQUEST',
@@ -9,9 +9,12 @@ export default ({ prod }) => dispatch => dispatch({
   ],
   options: {
     method: 'POST',
-    uri: CAAS.URI + (prod ? CAAS.TLD.PROD : CAAS.TLD.QA),
+    uri: CAAS.URI + (qa ? CAAS.TLD.QA : CAAS.TLD.PROD ) + '/search',
     json: true,
     body: {
+      type: 'issue',
+      provider: 'xip',//(qa ? 'xip' : 'internal_typed_index'),
+      size: 0,
       query: {
         aggs: {
           brands: {
@@ -22,12 +25,9 @@ export default ({ prod }) => dispatch => dispatch({
           },
         },
       },
-      size: 0,
-      type: 'issue',
-      provider: 'xip',
     },
     headers: {
-      'x-api-key': (prod ? CAAS.TOKEN.PROD : CAAS.TOKEN.QA),
+      'x-api-key': (qa ? CAAS.TOKEN.QA: CAAS.TOKEN.PROD),
     },
   },
 });

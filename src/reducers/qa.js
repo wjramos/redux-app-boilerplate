@@ -1,6 +1,6 @@
 const INITIAL_STATE = false;
 
-export default function brandReducer(state = INITIAL_STATE, { type, qa }) {
+export default function qaReducer(state = INITIAL_STATE, { type, qa }) {
   if (type.includes('QA_')) {
     if (type === 'QA_SET') {
       return qa;
@@ -10,4 +10,4 @@ export default function brandReducer(state = INITIAL_STATE, { type, qa }) {
   return state;
 }
 
-brandReducer.initialState = INITIAL_STATE;
+qaReducer.initialState = INITIAL_STATE;

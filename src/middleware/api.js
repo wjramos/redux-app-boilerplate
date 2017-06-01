@@ -31,7 +31,7 @@ export default (/* store */) => next => async action => {
         result = JSON.parse(result);
       }
 
-      const { statusCode, err, errorMessage, body } = result;
+      const { statusCode = 200, err, errorMessage, body } = result;
       const response = body && typeof body === 'string' ? JSON.parse(body) : body || result;
 
       if (response.errorMessage) {

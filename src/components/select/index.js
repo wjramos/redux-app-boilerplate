@@ -1,9 +1,8 @@
 import React from 'react';
 import select from './style';
 
-export const Option = ({ children, value, selected, style }) => (
+export const Option = ({ children, value, style }) => (
   <option
-    selected={selected}
     value={value}
   >
     {children}
@@ -12,12 +11,12 @@ export const Option = ({ children, value, selected, style }) => (
 
 export default ({
   options = [],
-  selected,
   onChange,
   required,
   autoFocus,
   disabled,
   multiple,
+  value,
   style,
 }) => (
   <select
@@ -26,11 +25,15 @@ export default ({
     disabled={disabled}
     multiple={multiple}
     autoFocus={autoFocus}
+    value={value}
     style={Object.assign({}, select, style)}
   >
-    {options.map(({ description, code, id }, i) => (
-      <Option key={i} value={id} selected={selected}>
-        {code} - {description}
+    {options.map((val, key) => (
+      <Option
+        key={key}
+        value={val}
+      >
+        {val}
       </Option>
     ))}
   </select>

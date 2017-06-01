@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { SpinLoader } from 'react-css-loaders';
 import Radium from 'radium';
 
-import { LazyTrigger, Card, Placeholder, ProgressBar, Sticky, Badge } from '../../components';
+import { LazyTrigger, Card, Placeholder, ProgressBar, Sticky, Badge, Select } from '../../components';
 import { propTypes } from '../../util';
 import style from './style';
 
@@ -26,6 +26,11 @@ export default class IssuesView extends Component {
     if (props.noLoad !== this.state.noLoad) {
       this.setState({ noLoad: props.noLoad });
     }
+  }
+
+  onBrandSelect(event) {
+    const { value = '' } = event.target;
+    this.props.setBrand(value);
   }
 
   get trigger() {
@@ -68,9 +73,19 @@ export default class IssuesView extends Component {
     );
   }
 
+  get brandSelect() {
+    return (
+      <Select
+        options={this.props.brands}
+        onChange={::this.onBrandSelect}
+      />
+    );
+  }
+
   render() {
     return (
       <main>
+        {this.brandSelect}
         {this.issues}
         {this.trigger}
       </main>

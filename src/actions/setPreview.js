@@ -1,4 +1,4 @@
-export default ({ preview }) => ({
+export default preview => ({
   type: 'PREVIEW_SET',
   preview,
 });

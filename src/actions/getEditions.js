@@ -1,6 +1,6 @@
 import { CAAS } from './constants';
 
-export default ({ brand, prod }) => dispatch => dispatch({
+export default ({ brand, qa }) => dispatch => dispatch({
   middleware: 'API',
   types: [
     'EDITIONS_REQUEST',
@@ -9,13 +9,13 @@ export default ({ brand, prod }) => dispatch => dispatch({
   ],
   options: {
     method: 'POST',
-    uri: CAAS.URI + (prod ? CAAS.TLD.PROD : CAAS.TLD.QA),
+    uri: CAAS.URI + (qa ? CAAS.TLD.QA : CAAS.TLD.PROD ),
     json: true,
     body: {
 
     },
     headers: {
-      'x-api-key': (prod ? CAAS.TOKEN.PROD : CAAS.TOKEN.QA),
+      'x-api-key': (qa ? CAAS.TOKEN.QA : CAAS.TOKEN.PROD),
     },
   },
 });
