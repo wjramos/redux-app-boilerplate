@@ -37,7 +37,7 @@ export default ({ brand, limit, offset, edition, preview, qa }) => dispatch => d
           bool: {
             must: [
               { match: { brand } },
-              (edition ? { match: { edition } } : {}),
+              (edition ? { match: { issue_edition: edition } } : {}),
             ],
           },
         },
@@ -45,7 +45,7 @@ export default ({ brand, limit, offset, edition, preview, qa }) => dispatch => d
           and: [
             { exists: { field: 'issue_pdf' } },
             { exists: { field: 'asset_thumbnail' } },
-            (preview ? { range: {
+            (!preview ? { range: {
               issue_digitalOnSaleDate: { lte: new Date().toISOString() },
             } } : {}),
           ],

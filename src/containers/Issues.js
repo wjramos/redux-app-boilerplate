@@ -71,12 +71,20 @@ class IssuesContainer extends Component {
       props.getBrands(props);
     }
 
-    if (brands && brands.length && !brand && !this.props.brand) {
+    if (!brand && !this.props.brand && brands && brands.length) {
       props.setBrand(brands[0]);
     }
 
     if (brand && !editions[brand]) {
       props.getEditions(props);
+    }
+
+    if (!edition && !this.props.edition && editions[brand] && editions[brand].length) {
+      props.setEdition(editions[brand][0]);
+    }
+
+    if (edition && brand !== this.props.brand) {
+      props.clearEditions(brand);
     }
 
     // Editions have already been fetched, something has changed from the previous state
