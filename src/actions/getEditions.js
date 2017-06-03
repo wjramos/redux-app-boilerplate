@@ -7,13 +7,14 @@ export default ({ brand, qa }) => dispatch => dispatch({
     'EDITIONS_SUCCESS',
     'EDITIONS_FAILURE',
   ],
+  params: { brand },
   options: {
     method: 'POST',
-    uri: CAAS.URI + (qa ? CAAS.TLD.QA : CAAS.TLD.PROD ),
+    uri: CAAS.URI + (/*qa ? CAAS.TLD.QA : */CAAS.TLD.PROD) + '/search',
     json: true,
     body: {
       type: 'issue',
-      provider: 'xip',//(qa ? 'xip' : 'internal_typed_index'),
+      provider: (/*qa ? 'xip' : */'internal_typed_index'),
       size: 0,
       query: {
         query: {
@@ -38,7 +39,7 @@ export default ({ brand, qa }) => dispatch => dispatch({
       },
     },
     headers: {
-      'x-api-key': (qa ? CAAS.TOKEN.QA : CAAS.TOKEN.PROD),
+      'x-api-key': (/*qa ? CAAS.TOKEN.QA : */CAAS.TOKEN.PROD),
     },
   },
 });

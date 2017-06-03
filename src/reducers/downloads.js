@@ -6,7 +6,7 @@ export default function downloadsReducer(state = INITIAL_STATE, { type, id, stat
 
     if (type === 'DOWNLOAD_CLEAR') {
       if (id) {
-        newState[id] = 0;
+        delete newState[id];
         return newState;
       }
 

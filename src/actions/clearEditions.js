@@ -1,4 +1,4 @@
 export default brand => ({
-  type: 'ISSUES_CLEAR',
+  type: 'EDITIONS_CLEAR',
   brand,
 });

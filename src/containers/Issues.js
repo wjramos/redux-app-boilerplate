@@ -19,17 +19,13 @@ class IssuesContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      offset: props.issues.length,
+      noLoad: false,
     };
   }
 
   componentWillMount() {
     if (!this.props.brands.length) {
       this.props.getBrands(this.props);
-    }
-
-    if (this.props.brand && !this.props.issues.length) {
-      this.props.getIssues(this.props);
     }
   }
 
@@ -38,26 +34,76 @@ class IssuesContainer extends Component {
   }
 
   componentWillReceiveProps(props) {
-    if (
-      props.brand !== this.props.brand
-      || props.edition !== this.props.edition
-      || props.preview !== this.props.preview
-      || props.qa !== this.props.qa
-    ) {
-      this.setState({ offset: 0 });
-      this.props.clearIssues(props.brand);
-      this.props.getIssues(props);
+    const { issues, brand, brands, edition, editions, qa, preview } = props;
+
+    if (issues.length !== this.props.issues.length) {
+      this.setState({ issues });
+    }
+
+    if (brands.length !== this.props.brands.length) {
+      this.setState({ brands });
+    }
+
+    if (brand && !this.props.brand) {
+      this.setState({ brand });
+    }
+
+    if (edition !== this.props.edition) {
+      this.setState({ edition });
+    }
+
+    if (qa !== this.props.qa) {
+      this.setState({ qa });
+    }
+
+    console.log(issues[brand], this.props.issues[brand])
+
+    if (issues[brand] && this.props.issues[brand] && (
+      (!issues[brand].length && !this.props.issues[brand].length)
+      || issues[brand].length <= this.props.issues[brand].length + LIMIT
+    )) {
+      console.log('noload')
+      // Stop loading new content if fewer than expected results returned - usually means end of content
+      this.setState({ noLoad: true });
+    }
+
+    if (!brands.length) {
+      props.getBrands(props);
+    }
+
+    if (brands && brands.length && !brand && !this.props.brand) {
+      props.setBrand(brands[0]);
+    }
+
+    if (brand && !editions[brand]) {
+      props.getEditions(props);
+    }
+
+    // Editions have already been fetched, something has changed from the previous state
+    if (editions[brand] && (
+      brand !== this.props.brand
+      || edition !== this.props.edition
+      || preview !== this.props.preview
+      || qa !== this.props.qa
+    )) {
+      this.setState({ noLoad: false });
+      props.clearIssues(brand);
+      props.getIssues(props);
     }
   }
 
   getIssues() {
-    this.props.getIssues(Object.assign({}, this.props, { limit: LIMIT, offset: this.state.offset }));
-
-    // Stop loading new content if fewer than expected results returned - usually means end of content
-    if (this.props.issues.length === this.state.offset) {
-      this.setState({ offset: this.state.offset + LIMIT });
-    } else {
-      this.setState({ noLoad: true });
+    if (this.props.brand && !this.state.noLoad) {
+      this.props.getIssues(
+        Object.assign(
+          {},
+          this.props,
+          {
+            limit: LIMIT,
+            offset: this.props.issues[this.props.brand] ? this.props.issues[this.props.brand].length : 0,
+          }
+        )
+      );
     }
   }
 

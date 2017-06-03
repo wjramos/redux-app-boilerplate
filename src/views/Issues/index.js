@@ -26,11 +26,11 @@ export default class IssuesView extends Component {
   }
 
   onScrollBottom() {
-    this.props.getIssues(this.props)
+    this.props.getIssues(this.props);
   }
 
   get trigger() {
-    if (this.props.brand && !this.props.noLoad) {
+    if (!this.props.noLoad) {
       return (
         <LazyTrigger
           onScreenEnter={::this.onScrollBottom}
@@ -57,12 +57,16 @@ export default class IssuesView extends Component {
       );
     }
 
-    return (
-      <SpinLoader
-        color="#0197cb"
-        size={6}
-      />
-    );
+    if (!this.props.noLoad) {
+      return (
+        <SpinLoader
+          color="#0197cb"
+          size={6}
+        />
+      );
+    }
+
+    return null;
   }
 
   get brandSelect() {
@@ -80,11 +84,11 @@ export default class IssuesView extends Component {
   }
 
   get editionSelect() {
-    if (this.props.editions.length) {
+    if (this.props.editions[this.props.brand] && this.props.editions[this.props.brand].length) {
       return (
         <Select
           value={this.props.edition}
-          options={this.props.editions}
+          options={this.props.editions[this.props.brand]}
           onChange={::this.onEditionSelect}
         />
       );
@@ -95,21 +99,39 @@ export default class IssuesView extends Component {
 
   get qaToggle() {
     return (
-      <Toggle
-        id={'qa'}
-        active={this.props.qa}
-        onChange={::this.onQaToggle}
-      />
+      <div>
+        <h3>QA Issues</h3>
+        <Toggle
+          id={'qa'}
+          active={this.props.qa}
+          onChange={::this.onQaToggle}
+        />
+      </div>
     );
   }
 
   get previewToggle() {
     return (
-      <Toggle
-        id={'preview'}
-        active={this.props.preview}
-        onChange={::this.onPreviewToggle}
-      />
+      <div>
+        <h3>Preview Future Issues</h3>
+        <Toggle
+          id={'preview'}
+          active={this.props.preview}
+          onChange={::this.onPreviewToggle}
+        />
+      </div>
+    );
+  }
+
+  get reset() {
+    return (
+      <button onClick={() => {
+        this.props.clearIssues();
+        this.props.clearEditions();
+        this.props.clearBrands();
+      }}>
+        reset
+      </button>
     );
   }
 
@@ -120,6 +142,7 @@ export default class IssuesView extends Component {
         {this.editionSelect}
         {this.qaToggle}
         {this.previewToggle}
+        {this.reset}
       </section>
     );
   }

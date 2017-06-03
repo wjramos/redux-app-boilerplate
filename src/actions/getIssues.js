@@ -1,21 +1,22 @@
 import { CAAS } from './constants';
 
-export default ({ brand, limit = 10, offset = 0, edition, preview, qa }) => dispatch => dispatch({
+export default ({ brand, limit, offset, edition, preview, qa }) => dispatch => dispatch({
   middleware: 'API',
   types: [
     'ISSUES_REQUEST',
     'ISSUES_SUCCESS',
     'ISSUES_FAILURE',
   ],
-  brand,
+  params: { brand },
   options: {
     method: 'POST',
     uri: CAAS.URI + (qa ? CAAS.TLD.QA : CAAS.TLD.PROD) + '/search',
     json: true,
     body: {
       type: 'issue',
-      provider: 'xip',//(qa ? 'xip' : 'internal_typed_index'),
+      provider: (qa ? 'xip' : 'internal_typed_index'),
       follow: [
+        '$sameAs',
         'asset_path',
         'asset_path_signed',
         'asset_path_expiration',
@@ -33,31 +34,48 @@ export default ({ brand, limit = 10, offset = 0, edition, preview, qa }) => disp
           },
         },
         query: {
-          constant_score: {
-            filter: {
-              and: [
-                {
-                  term: { brand },
-                },
-                (
-                  edition
-                  ? { term: { edition } }
-                  : {}
-                ),
-                {
-                  exists: {
-                    field: 'issue_pdf',
-                  },
-                },
-                {
-                  exists: {
-                    field: 'asset_thumbnail',
-                  },
-                },
-              ],
-            },
+          bool: {
+            must: [
+              { match: { brand } },
+              (edition ? { match: { edition } } : {}),
+            ],
           },
         },
+        filter: {
+          and: [
+            { exists: { field: 'issue_pdf' } },
+            { exists: { field: 'asset_thumbnail' } },
+            (preview ? { range: {
+              issue_digitalOnSaleDate: { lte: new Date().toISOString() },
+            } } : {}),
+          ],
+        },
+
+          // constant_score: {
+          //   filter: {
+          //     and: [
+          //       {
+          //         term: { brand },
+          //       },
+          //       {
+          //         exists: {
+          //           field: 'issue_pdf',
+          //         },
+          //       },
+          //       {
+          //         exists: {
+          //           field: 'asset_thumbnail',
+          //         },
+          //       },
+          //       (
+          //         edition
+          //         ? { term: { edition } }
+          //         : {}
+          //       ),
+          //     ],
+          //   },
+          // },
+        // },
       },
     },
     headers: {

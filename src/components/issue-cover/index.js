@@ -1,4 +1,6 @@
 import React from 'react';
+import { hashHistory } from 'react-router';
+
 import { Placeholder, Card, Badge, Sticky, ProgressBar } from '..';
 
 const Progress = ({ percent }) => percent > 0 && percent < 100 ? (
@@ -8,7 +10,7 @@ const Progress = ({ percent }) => percent > 0 && percent < 100 ? (
 ) : null;
 
 export default ({ issue, percent }) => (
-  <Card onClick={() => {}}>
+  <Card href={`/issue/${issue.$.id}`}>
     <Badge status={percent === 100 ? 'success' : null} />
     <Placeholder src={issue.asset_thumbnail.asset_path_signed} />
     <h3>

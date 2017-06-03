@@ -6,15 +6,15 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 
 export default (/* store */) => next => async action => {
   if (action.middleware === 'API') {
-    const { types, options, uri, onComplete, proxy = true } = action;
+    const { types, options, uri, params, onComplete, proxy = true } = action;
     const [requestType, successType, failureType] = types;
 
     next(Object.assign({}, action, { type: requestType }));
 
     try {
-      let result;
+      let response;
       if (proxy) {
-        result = await request({
+        response = await request({
           uri: PROXY.URI,
           method: 'POST',
           json: true,
@@ -24,23 +24,21 @@ export default (/* store */) => next => async action => {
           },
         });
       } else {
-        result = await request(options || uri);
+        response = await request(options || uri);
       }
 
-      while (typeof result === 'string') {
-        result = JSON.parse(result);
+      while (typeof response === 'string') {
+        response = JSON.parse(response);
       }
 
-      const { statusCode = 200, err, errorMessage, body } = result;
-      const response = body && typeof body === 'string' ? JSON.parse(body) : body || result;
-
-      if (response.errorMessage) {
-        throw response.errorMessage;
+      if (!response) {
+        throw new Error('No results');
       }
 
       next({
         type: successType,
         response,
+        params,
       });
 
       if (onComplete) {
@@ -52,6 +50,7 @@ export default (/* store */) => next => async action => {
       return next({
         type: failureType,
         error: e.message || e,
+        params,
       });
     }
   }

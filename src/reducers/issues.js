@@ -1,6 +1,6 @@
 const INITIAL_STATE = {};
 
-export default function issuesReducer(state = INITIAL_STATE, { type, response, brand, error }) {
+export default function issuesReducer(state = INITIAL_STATE, { type, brand, params, response, error }) {
   if (type.includes('ISSUES_')) {
     const newState = Object.assign({}, state);
 
@@ -18,12 +18,15 @@ export default function issuesReducer(state = INITIAL_STATE, { type, response, b
     }
 
     if (type === 'ISSUES_SUCCESS') {
-      if (response.entities && response.entities.length) {
-        const { brand } = response.entities[0];
-        newState[brand] = newState[brand]
-          ? [...new Set(newState[brand].concat(response.entities))]
-          : response.entities;
-        return newState;
+      if (response) {
+        const issues = response.entities;
+        if (issues && issues.length) {
+          newState[params.brand] = newState[params.brand]
+          ? [...new Set(newState[params.brand].concat(issues))]
+          : issues;
+
+          return newState;
+        }
       }
     }
 

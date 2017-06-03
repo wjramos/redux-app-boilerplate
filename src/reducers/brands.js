@@ -1,6 +1,6 @@
 const INITIAL_STATE = [];
 
-export default function brandsReducer(state = INITIAL_STATE, { type, response, error }) {
+export default function brandsReducer(state = INITIAL_STATE, { type, params, response, error }) {
   if (type.includes('BRANDS_')) {
     const newState = state.slice();
 

@@ -9,6 +9,19 @@ import style from './style';
 
 @Radium
 export default class Card extends Component {
+  static propTypes = {
+    children: PropTypes.any,
+    onClick: PropTypes.func,
+    href: PropTypes.string,
+    style: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+    direction: PropTypes.string,
+  }
+
+  static defaultProps = {
+    style: [],
+    direction: 'column',
+  }
+
   onMouseEnter() {
     this.setState({ hover: true });
   }
@@ -38,17 +51,3 @@ export default class Card extends Component {
     );
   }
 }
-
-Card.propTypes = {
-  children: PropTypes.any,
-  onClick: PropTypes.func,
-  href: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
-  direction: PropTypes.string,
-};
-
-
-Card.defaultProps = {
-  style: [],
-  direction: 'column',
-};
