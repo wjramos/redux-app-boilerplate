@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { SpinLoader } from 'react-css-loaders';
 
-import { LazyTrigger, Card, Placeholder, ProgressBar, Sticky, Badge, Select, Grid, Toggle, IssueCover } from '../../components';
+import { LazyTrigger, Card, Placeholder, Accordion, ProgressBar, Sticky, Badge, Select, Grid, Toggle, IssueCover } from '../../components';
 import { propTypes } from '../../util';
 
 export default class IssuesView extends Component {
@@ -147,13 +147,13 @@ export default class IssuesView extends Component {
 
   get filters() {
     return (
-      <section>
+      <Accordion heading="Filter">
         {this.brandSelect}
         {this.editionSelect}
         {this.qaToggle}
         {this.previewToggle}
         {this.reset}
-      </section>
+      </Accordion>
     );
   }
 
