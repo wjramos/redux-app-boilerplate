@@ -7,7 +7,7 @@ export default ({ brand, limit, offset, edition, preview, qa }) => dispatch => d
     'ISSUES_SUCCESS',
     'ISSUES_FAILURE',
   ],
-  params: { brand },
+  params: { brand, limit, offset, edition, preview, qa },
   options: {
     method: 'POST',
     uri: CAAS.URI + (qa ? CAAS.TLD.QA : CAAS.TLD.PROD) + '/search',
@@ -50,32 +50,6 @@ export default ({ brand, limit, offset, edition, preview, qa }) => dispatch => d
             } } : {}),
           ],
         },
-
-          // constant_score: {
-          //   filter: {
-          //     and: [
-          //       {
-          //         term: { brand },
-          //       },
-          //       {
-          //         exists: {
-          //           field: 'issue_pdf',
-          //         },
-          //       },
-          //       {
-          //         exists: {
-          //           field: 'asset_thumbnail',
-          //         },
-          //       },
-          //       (
-          //         edition
-          //         ? { term: { edition } }
-          //         : {}
-          //       ),
-          //     ],
-          //   },
-          // },
-        // },
       },
     },
     headers: {

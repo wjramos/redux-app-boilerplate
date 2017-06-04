@@ -43,21 +43,23 @@ export default class IssuesView extends Component {
   }
 
   get issues() {
-    if (this.props.issues[this.props.brand] && this.props.issues[this.props.brand].length) {
+    const { issues, brand, qa, downloads, noLoad } = this.props;
+    const issueEnv = qa ? 'qa' : 'prod';
+    if (issues[brand] && issues[brand][issueEnv] && issues[brand][issueEnv].length) {
       return (
         <Grid>
-          {this.props.issues[this.props.brand].map((issue, key) => (
+          {issues[brand][issueEnv].map((issue, key) => (
             <IssueCover
               key={key}
               issue={issue}
-              percent={this.props.downloads[issue.$.id]}
+              percent={downloads[issue.$.id]}
             />
           ))}
         </Grid>
       );
     }
 
-    if (!this.props.noLoad) {
+    if (!noLoad) {
       return (
         <SpinLoader
           color="#0197cb"
@@ -70,11 +72,14 @@ export default class IssuesView extends Component {
   }
 
   get brandSelect() {
-    if (this.props.brands.length) {
+    const { brand, brands, qa } = this.props;
+    const issueEnv = qa ? 'qa' : 'prod';
+
+    if (brands[issueEnv] && brands[issueEnv].length) {
       return (
         <Select
-          value={this.props.brand}
-          options={this.props.brands}
+          value={brand}
+          options={brands[issueEnv]}
           onChange={::this.onBrandSelect}
         />
       );
@@ -84,11 +89,14 @@ export default class IssuesView extends Component {
   }
 
   get editionSelect() {
-    if (this.props.editions[this.props.brand] && this.props.editions[this.props.brand].length) {
+    const { edition, editions, brand, qa } = this.props;
+    const issueEnv = qa ? 'qa' : 'prod';
+
+    if (editions[brand] && editions[brand][issueEnv] && editions[brand][issueEnv].length) {
       return (
         <Select
-          value={this.props.edition}
-          options={this.props.editions[this.props.brand]}
+          value={edition}
+          options={editions[brand][issueEnv]}
           onChange={::this.onEditionSelect}
         />
       );
@@ -100,7 +108,9 @@ export default class IssuesView extends Component {
   get qaToggle() {
     return (
       <div>
-        <h3>QA Issues</h3>
+        <h3>
+          QA Issues
+        </h3>
         <Toggle
           id={'qa'}
           active={this.props.qa}

@@ -1,4 +1,4 @@
-export default brand => ({
+export default params => ({
   type: 'EDITIONS_CLEAR',
-  brand,
+  params,
 });

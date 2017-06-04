@@ -1,12 +1,18 @@
 const INITIAL_STATE = {};
 
-export default function brandsReducer(state = INITIAL_STATE, { type, brand, params, response, error }) {
+export default function brandsReducer(state = INITIAL_STATE, { type, params, response, error }) {
   if (type.includes('EDITIONS_')) {
     const newState = Object.assign({}, state);
 
     if (type === 'EDITIONS_CLEAR') {
-      if (brand) {
-        delete newState[brand];
+      if (params.brand) {
+        const issueEnv = params.qa ? 'qa' : 'prod';
+        if (state[params.brand] && params.qa !== undefined) {
+          delete newState[params.brand][issueEnv];
+          return newState;
+        }
+
+        delete newState[params.brand];
         return newState;
       }
 
@@ -20,8 +26,14 @@ export default function brandsReducer(state = INITIAL_STATE, { type, brand, para
     if (type === 'EDITIONS_SUCCESS') {
       const issues = response.entities;
       if (issues && issues.length) {
+        const issueEnv = params.qa ? 'qa' : 'prod';
         const editions = response.aggregations.editions.buckets.map(bucket => bucket.key);
-        newState[params.brand] = editions;
+
+        if (!newState[params.brand]) {
+          newState[params.brand] = { prod: [], qa: [] };
+        }
+
+        newState[params.brand][issueEnv] = editions;
 
         // Combine
         // newState[brand] = newState[brand]

@@ -7,7 +7,7 @@ export default ({ brand, qa }) => dispatch => dispatch({
     'EDITIONS_SUCCESS',
     'EDITIONS_FAILURE',
   ],
-  params: { brand },
+  params: { brand, qa },
   options: {
     method: 'POST',
     uri: CAAS.URI + (/*qa ? CAAS.TLD.QA : */CAAS.TLD.PROD) + '/search',
@@ -15,7 +15,7 @@ export default ({ brand, qa }) => dispatch => dispatch({
     body: {
       type: 'issue',
       provider: (/*qa ? 'xip' : */'internal_typed_index'),
-      size: 0,
+      // size: 0,
       query: {
         query: {
           constant_score: {
@@ -28,11 +28,11 @@ export default ({ brand, qa }) => dispatch => dispatch({
             },
           },
         },
-        aggs: {
+        aggregations: {
           editions: {
             terms: {
               field: 'issue_edition.raw',
-              size: 0,
+              // size: 0,
             },
           },
         },

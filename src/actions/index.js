@@ -1,13 +1,17 @@
-export clearIssues from './clearIssues';
 export getIssues from './getIssues';
+export clearIssues from './clearIssues';
 
-export clearBrands from './clearBrands';
 export getBrands from './getBrands';
-export setBrand from './setBrand';
+export clearBrands from './clearBrands';
 
-export clearEditions from './clearEditions';
-export getEditions from './getEditions';
+export setBrand from './setBrand';
+export clearBrand from './clearBrand';
+
 export setEdition from './setEdition';
+export clearEdition from './clearEdition';
+
+export getEditions from './getEditions';
+export clearEditions from './clearEditions';
 
 export clearDownloads from './clearDownloads';
 

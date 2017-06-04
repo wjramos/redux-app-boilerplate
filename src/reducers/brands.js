@@ -1,11 +1,17 @@
-const INITIAL_STATE = [];
+const INITIAL_STATE = {};
 
 export default function brandsReducer(state = INITIAL_STATE, { type, params, response, error }) {
   if (type.includes('BRANDS_')) {
-    const newState = state.slice();
+    const newState = Object.assign({}, state);
+    const issueEnv = params.qa ? 'qa' : 'prod';
 
     if (type === 'BRANDS_CLEAR') {
-      return [];
+      if (params.qa !== undefined) {
+        delete newState[issueEnv];
+        return newState;
+      }
+
+      return {};
     }
 
     if (type === 'BRANDS_REQUEST') {
@@ -13,7 +19,8 @@ export default function brandsReducer(state = INITIAL_STATE, { type, params, res
     }
 
     if (type === 'BRANDS_SUCCESS') {
-      return response.aggregations.brands.buckets.map(bucket => bucket.key);
+      newState[issueEnv] = response.aggregations.brands.buckets.map(bucket => bucket.key);
+      return newState;
     }
 
     if (type === 'BRANDS_FAILURE') {

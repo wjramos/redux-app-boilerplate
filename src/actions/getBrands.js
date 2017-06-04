@@ -7,6 +7,7 @@ export default ({ qa }) => dispatch => dispatch({
     'BRANDS_SUCCESS',
     'BRANDS_FAILURE',
   ],
+  params: { qa },
   options: {
     method: 'POST',
     uri: CAAS.URI + (/*qa ? CAAS.TLD.QA : */CAAS.TLD.PROD ) + '/search',
@@ -14,13 +15,12 @@ export default ({ qa }) => dispatch => dispatch({
     body: {
       type: 'issue',
       provider: (/*qa ? 'xip' : */'internal_typed_index'),
-      size: 0,
       query: {
-        aggs: {
+        // size: 0,
+        aggregations: {
           brands: {
             terms: {
               field: 'brand',
-              size: 0,
             },
           },
         },

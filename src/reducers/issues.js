@@ -1,12 +1,18 @@
 const INITIAL_STATE = {};
 
-export default function issuesReducer(state = INITIAL_STATE, { type, brand, params, response, error }) {
+export default function issuesReducer(state = INITIAL_STATE, { type, params, response, error }) {
   if (type.includes('ISSUES_')) {
     const newState = Object.assign({}, state);
 
     if (type === 'ISSUES_CLEAR') {
-      if (brand) {
-        delete newState[brand];
+      if (params.brand) {
+        if (state[params.brand] && params.qa !== undefined) {
+          const issueEnv = params.qa ? 'qa' : 'prod';
+          delete newState[params.brand][issueEnv];
+          return newState;
+        }
+
+        delete newState[params.brand];
         return newState;
       }
 
@@ -21,8 +27,14 @@ export default function issuesReducer(state = INITIAL_STATE, { type, brand, para
       if (response) {
         const issues = response.entities;
         if (issues && issues.length) {
-          newState[params.brand] = newState[params.brand]
-          ? [...new Set(newState[params.brand].concat(issues))]
+          const issueEnv = params.qa ? 'qa' : 'prod';
+
+          if (!newState[params.brand]) {
+            newState[params.brand] = { prod: [], qa: [] };
+          }
+
+          newState[params.brand][issueEnv] = newState[params.brand][issueEnv]
+          ? [...new Set(newState[params.brand][issueEnv].concat(issues))]
           : issues;
 
           return newState;
