@@ -10,11 +10,11 @@ export default ({ brand, qa }) => dispatch => dispatch({
   params: { brand, qa },
   options: {
     method: 'POST',
-    uri: CAAS.URI + (/*qa ? CAAS.TLD.QA : */CAAS.TLD.PROD) + '/search',
+    uri: CAAS.URI + (qa ? CAAS.TLD.QA : CAAS.TLD.PROD) + '/search',
     json: true,
     body: {
       type: 'issue',
-      provider: (/*qa ? 'xip' : */'internal_typed_index'),
+      provider: (qa ? 'xip' : 'internal_typed_index'),
       // size: 0,
       query: {
         query: {
@@ -39,7 +39,7 @@ export default ({ brand, qa }) => dispatch => dispatch({
       },
     },
     headers: {
-      'x-api-key': (/*qa ? CAAS.TOKEN.QA : */CAAS.TOKEN.PROD),
+      'x-api-key': (qa ? CAAS.TOKEN.QA : CAAS.TOKEN.PROD),
     },
   },
 });

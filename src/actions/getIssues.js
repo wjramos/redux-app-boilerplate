@@ -45,9 +45,9 @@ export default ({ brand, limit, offset, edition, preview, qa }) => dispatch => d
           and: [
             { exists: { field: 'issue_pdf' } },
             { exists: { field: 'asset_thumbnail' } },
-            (!preview ? { range: {
-              issue_digitalOnSaleDate: { lte: new Date().toISOString() },
-            } } : {}),
+            // (!preview ? { range: {
+            //   issue_digitalOnSaleDate: { lte: new Date().toISOString() },
+            // } } : {}),
           ],
         },
       },

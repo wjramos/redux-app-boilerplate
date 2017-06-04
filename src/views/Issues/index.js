@@ -48,7 +48,7 @@ export default class IssuesView extends Component {
     if (issues[brand] && issues[brand][issueEnv] && issues[brand][issueEnv].length) {
       return (
         <Grid>
-          {issues[brand][issueEnv].map((issue, key) => (
+          {issues[brand][issueEnv].filter(issue => this.props.preview ? true : Date.now() > Date.parse(issue.issue_digitalOnSaleDate)).map((issue, key) => (
             <IssueCover
               key={key}
               issue={issue}
@@ -136,9 +136,9 @@ export default class IssuesView extends Component {
   get reset() {
     return (
       <button onClick={() => {
-        this.props.clearIssues();
-        this.props.clearEditions();
-        this.props.clearBrands();
+        this.props.clearIssues(this.props);
+        this.props.clearEditions(this.props);
+        this.props.clearBrands(this.props);
       }}>
         reset
       </button>

@@ -1,4 +1,4 @@
-export default params => ({
+export default ({ brand, qa }) => ({
   type: 'BRANDS_CLEAR',
-  params,
+  params: { brand, qa },
 });

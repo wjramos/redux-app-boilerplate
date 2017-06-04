@@ -35,65 +35,48 @@ class IssuesContainer extends Component {
   }
 
   componentWillReceiveProps(props) {
-    const { issues, brand, brands, edition, editions, qa, preview } = props;
+    const {
+      issues, brand, brands, edition, editions, qa, preview,
+      getBrands, setBrand, getEditions, setEdition, clearEdition,
+      getIssues, clearIssues,
+    } = props;
     const issueEnv = qa ? 'qa' : 'prod';
-    // if (issues.length !== this.props.issues.length) {
-    //   this.setState({ issues });
-    // }
-    //
-    // if (brands.length !== this.props.brands.length) {
-    //   this.setState({ brands });
-    // }
-    //
-    // if (brand && !this.props.brand) {
-    //   this.setState({ brand });
-    // }
-    //
-    // if (edition !== this.props.edition) {
-    //   this.setState({ edition });
-    // }
-    //
-    // if (qa !== this.props.qa) {
-    //   this.setState({ qa });
-    // }
 
-    // console.log(issues[brand], this.props.issues[brand])
-
+    // Stop loading new content if fewer than expected results returned - usually means end of content
     if (issues[brand] && this.props.issues[brand]
       && issues[brand][issueEnv] && this.props.issues[brand][issueEnv] && (
       (!issues[brand][issueEnv].length && !this.props.issues[brand][issueEnv].length)
-      || issues[brand][issueEnv].length <= this.props.issues[brand][issueEnv].length + LIMIT
+      || issues[brand][issueEnv].length < this.props.issues[brand][issueEnv].length + LIMIT
     )) {
       console.log('noload')
-      // Stop loading new content if fewer than expected results returned - usually means end of content
       this.setState({ noLoad: true });
     }
 
     // If no available brands, fetch
-    if (!brands[issueEnv] || !brands[issueEnv].length) {
-      props.getBrands(props);
+    if (!brands[issueEnv]) {
+      getBrands(props);
     }
 
     // If editions have not been fetched for current brand,
     // attempt to gather available editions
     if (brand && (!editions[brand] || !editions[brand][issueEnv])) {
-      props.getEditions(props);
+      getEditions(props);
     }
 
     // If no set brand, but brands available, set to first brand
-    if (!brand && !this.props.brand && brands && brands[issueEnv] && brands[issueEnv].length) {
-      props.setBrand(brands[issueEnv][0]);
+    if (!brand && !this.props.brand && brands[issueEnv] && brands[issueEnv].length) {
+      setBrand(brands[issueEnv][0]);
     }
 
     // If editions available for current brand and no edition set,
     // set to first available edition
     if (!edition && !this.props.edition && editions[brand] && editions[brand][issueEnv] && editions[brand][issueEnv].length) {
-      props.setEdition(editions[brand][issueEnv][0]);
+      setEdition(editions[brand][issueEnv][0]);
     }
 
-    // On brand change, clear editions on new brand to refetch
+    // On brand change, clear current edition
     if (edition && brand !== this.props.brand) {
-      props.clearEdition();
+      clearEdition();
     }
 
     // Editions have already been fetched,
@@ -103,13 +86,13 @@ class IssuesContainer extends Component {
       && editions[brand][issueEnv]
       && (brand !== this.props.brand
       || edition !== this.props.edition
-      || preview !== this.props.preview
+      // || preview !== this.props.preview
       || qa !== this.props.qa
     )) {
       const offset = issues[brand] && issues[brand][issueEnv] ? issues[brand][issueEnv].length : 0;
       this.setState({ noLoad: false });
-      props.clearIssues(props);
-      props.getIssues(
+      clearIssues(props);
+      getIssues(
         Object.assign(
           {},
           props,
@@ -123,10 +106,12 @@ class IssuesContainer extends Component {
   }
 
   getIssues() {
-    if (this.props.brand && !this.state.noLoad) {
-      const issueEnv = this.props.qa ? 'qa' : 'prod';
-      const offset = this.props.issues[this.props.brand] && this.props.issues[this.props.brand][issueEnv] ? this.props.issues[this.props.brand][issueEnv].length : 0;
-      this.props.getIssues(
+    const { brand, qa, issues, getIssues } = this.props;
+
+    if (brand && !this.state.noLoad) {
+      const issueEnv = qa ? 'qa' : 'prod';
+      const offset = issues[brand] && issues[brand][issueEnv] ? issues[brand][issueEnv].length : 0;
+      getIssues(
         Object.assign(
           {},
           this.props,

@@ -33,12 +33,9 @@ export default function brandsReducer(state = INITIAL_STATE, { type, params, res
           newState[params.brand] = { prod: [], qa: [] };
         }
 
-        newState[params.brand][issueEnv] = editions;
-
-        // Combine
-        // newState[brand] = newState[brand]
-        //   ? [...new Set(newState[brand].concat(editions))]
-        //   : editions;
+        newState[params.brand][issueEnv] = newState[params.brand][issueEnv]
+        ? [...new Set(newState[params.brand][issueEnv].concat(editions))]
+        : issues;
 
         return newState;
       }

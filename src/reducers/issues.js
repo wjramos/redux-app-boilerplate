@@ -36,10 +36,10 @@ export default function issuesReducer(state = INITIAL_STATE, { type, params, res
           newState[params.brand][issueEnv] = newState[params.brand][issueEnv]
           ? [...new Set(newState[params.brand][issueEnv].concat(issues))]
           : issues;
-
-          return newState;
         }
       }
+
+      return newState;
     }
 
     if (type === 'ISSUES_FAILURE') {

@@ -18,18 +18,13 @@ export default function downloadsReducer(state = INITIAL_STATE, { type, id, stat
       return newState;
     }
 
-    if (type === 'DOWNLOAD_PROGRESS') {
-      newState[id] = status;
-      return newState;
-    }
-
-    if (type === 'DOWNLOAD_SUCCESS') {
+    if (type === 'DOWNLOAD_PROGRESS' || type === 'DOWNLOAD_SUCCESS') {
       newState[id] = status;
       return newState;
     }
 
     if (type === 'DOWNLOAD_FAILURE') {
-      newState[id] = 0;
+      newState[id] = -1;
       return newState;
     }
   }
