@@ -1,7 +1,5 @@
-/**
-  * Placeholder component
-  */
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Radium from 'radium';
 
 import { LazyTrigger } from '..';
@@ -112,12 +110,18 @@ export default class Placeholder extends Component {
 
   render() {
     return (
-      <figure
-        style={[style.placeholder, style.ratio, { paddingBottom: `${(this.state.ratio || 1) * 100}%` }]}
-      >
-        {this.placeholderTrigger}
-        {this.fullImage}
-      </figure>
+      <div style={{ width: `${(this.props.width || 1) * 100}%`, margin: 'auto' }}>
+        <figure
+          style={[
+            style.placeholder,
+            style.ratio,
+            { paddingBottom: `${(this.state.ratio || 1) * 100}%` },
+          ]}
+        >
+          {this.placeholderTrigger}
+          {this.fullImage}
+        </figure>
+      </div>
     );
   }
 }

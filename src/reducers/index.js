@@ -1,7 +1,9 @@
 export downloads from './downloads';
 
-// export issue from './issue';
+export issue from './issue';
 export issues from './issues';
+
+export display from './display';
 
 export brand from './brand';
 export brands from './brands';

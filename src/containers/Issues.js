@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { propTypes, mapDispatchToProps, mapStateToProps } from '../util';
+import { propTypes, mapDispatchToProps, mapStateToProps, getDeviceWidth } from '../util';
 import { Issues } from '../views';
 
-const DEVICE_WIDTH = parseInt(document.documentElement.clientWidth || document.body.clientWidth || window.innerWidth, 10);
-const CACHE_DURATION = 60 * 60 * 1000; // ms
+const deviceWidth = getDeviceWidth();
+
 let LIMIT = 6;
-if (DEVICE_WIDTH > 1023) {
+if (deviceWidth > 1023) {
   LIMIT = 8;
-} else if (DEVICE_WIDTH > 767) {
+} else if (deviceWidth > 767) {
   LIMIT = 9;
 }
 
@@ -36,19 +36,23 @@ class IssuesContainer extends Component {
 
   componentWillReceiveProps(props) {
     const {
-      issues, brand, brands, edition, editions, qa, preview,
+      issue, issues, brand, brands, edition, editions, qa, preview, display,
       getBrands, setBrand, getEditions, setEdition, clearEdition,
-      getIssues, clearIssues,
+      clearIssue, getIssues, clearIssues, setDisplay, clearDisplay,
     } = props;
     const issueEnv = qa ? 'qa' : 'prod';
 
     // Stop loading new content if fewer than expected results returned - usually means end of content
-    if (issues[brand] && this.props.issues[brand]
-      && issues[brand][issueEnv] && this.props.issues[brand][issueEnv] && (
-      (!issues[brand][issueEnv].length && !this.props.issues[brand][issueEnv].length)
-      || issues[brand][issueEnv].length < this.props.issues[brand][issueEnv].length + LIMIT
-    )) {
-      console.log('noload')
+    if (brand
+      && issues[brand]
+      && issues[brand][issueEnv]
+      && this.props.issues[brand]
+      && this.props.issues[brand][issueEnv]
+      && (
+        (!issues[brand][issueEnv].length && !this.props.issues[brand][issueEnv].length)
+        || issues[brand][issueEnv].length < this.props.issues[brand][issueEnv].length + LIMIT
+      )
+    ) {
       this.setState({ noLoad: true });
     }
 
@@ -57,41 +61,38 @@ class IssuesContainer extends Component {
       getBrands(props);
     }
 
+    // If no set brand, but brands available, set to first brand
+    if (!brand && brands[issueEnv] && brands[issueEnv].length) {
+      setBrand(brands[issueEnv][0]);
+    }
+
     // If editions have not been fetched for current brand,
     // attempt to gather available editions
     if (brand && (!editions[brand] || !editions[brand][issueEnv])) {
       getEditions(props);
     }
 
-    // If no set brand, but brands available, set to first brand
-    if (!brand && !this.props.brand && brands[issueEnv] && brands[issueEnv].length) {
-      setBrand(brands[issueEnv][0]);
-    }
-
     // If editions available for current brand and no edition set,
     // set to first available edition
-    if (!edition && !this.props.edition && editions[brand] && editions[brand][issueEnv] && editions[brand][issueEnv].length) {
+    if (!edition && brand && editions[brand] && editions[brand][issueEnv] && editions[brand][issueEnv].length) {
       setEdition(editions[brand][issueEnv][0]);
     }
 
     // On brand change, clear current edition
-    if (edition && brand !== this.props.brand) {
+    if (edition && (brand !== this.props.brand || qa !== this.props.qa)) {
       clearEdition();
     }
 
     // Editions have already been fetched,
     // something has changed from the previous state
     // Allow progressive loading to continue, fetch fresh issues
-    if (editions[brand]
+    if (brand
+      && editions[brand]
       && editions[brand][issueEnv]
-      && (brand !== this.props.brand
-      || edition !== this.props.edition
-      // || preview !== this.props.preview
-      || qa !== this.props.qa
-    )) {
+      && (!issues[brand] || !issues[brand][issueEnv])
+    ) {
       const offset = issues[brand] && issues[brand][issueEnv] ? issues[brand][issueEnv].length : 0;
       this.setState({ noLoad: false });
-      clearIssues(props);
       getIssues(
         Object.assign(
           {},
@@ -102,6 +103,36 @@ class IssuesContainer extends Component {
           }
         )
       );
+    }
+
+    // Set issues to display if none available
+    if (!display.length
+      && issues[brand]
+      && issues[brand][issueEnv]
+      && issues[brand][issueEnv].length
+      && editions[brand]
+      && editions[brand][issueEnv]
+    ) {
+      setDisplay(props);
+    }
+
+    // Refresh issues display if settings have changed or there are new issues available
+    if (
+      display.length
+      && (
+        brand !== this.props.brand
+        || edition !== this.props.edition
+        || preview !== this.props.preview
+        || qa !== this.props.qa
+        || issues[brand][issueEnv].length !== this.props.issues[brand][issueEnv].length
+      )
+    ) {
+      clearDisplay();
+    }
+
+    // Clear issue if set
+    if (issue) {
+      // clearIssue();
     }
   }
 

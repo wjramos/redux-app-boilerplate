@@ -8,14 +8,26 @@ export default class IssueView extends Component {
   static propTypes = propTypes;
 
   get issue() {
+    return (
+      <IssueCover {...this.props} />
+    );
+  }
 
+  get toc() {
+    return (
+      <TableOfContents {...this.props} />
+    );
   }
 
   render() {
     return (
       <main>
-        {this.issue}
-        test
+        <h1>
+          {this.props.issue.$.id}
+        </h1>
+        <Placeholder src={this.props.issue.asset_thumbnail.asset_path_signed} width={.5} />
+        {/* {this.issue} */}
+        {/* {this.toc} */}
       </main>
     );
   }

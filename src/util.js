@@ -1,8 +1,12 @@
-import { PropTypes } from 'react';
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 
 import * as actions from './actions';
 import * as reducers from './reducers/';
+
+export function getDeviceWidth() {
+  return parseInt(document.documentElement.clientWidth || document.body.clientWidth || window.innerWidth, 10);
+}
 
 export function getProps(props) {
   return Object.keys(props).reduce((obj, state) => {
@@ -39,7 +43,7 @@ export function mapDispatchToProps(dispatch) {
   }, {});
 }
 
-export function mapStateToProps({ downloads, issue, issues, brand, brands, edition, editions, preview, qa }) {
+export function mapStateToProps({ downloads, issue, issues, brand, brands, edition, editions, preview, qa, display }) {
   return {
     downloads,
     issue,
@@ -50,5 +54,6 @@ export function mapStateToProps({ downloads, issue, issues, brand, brands, editi
     editions,
     preview,
     qa,
+    display,
   };
 }

@@ -1,7 +1,8 @@
 /**
   * Article summary web component
   */
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { hashHistory } from 'react-router';
 import Radium from 'radium';
 

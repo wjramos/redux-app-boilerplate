@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { SpinLoader } from 'react-css-loaders';
+import { hashHistory } from 'react-router';
 
 import { LazyTrigger, Card, Placeholder, Accordion, ProgressBar, Sticky, Badge, Select, Grid, Toggle, IssueCover } from '../../components';
 import { propTypes } from '../../util';
@@ -29,6 +30,11 @@ export default class IssuesView extends Component {
     this.props.getIssues(this.props);
   }
 
+  onIssueSelect(issue) {
+    this.props.setIssue(issue);
+    hashHistory.push(`/issue/${issue.$.id}`);
+  }
+
   get trigger() {
     if (!this.props.noLoad) {
       return (
@@ -43,16 +49,16 @@ export default class IssuesView extends Component {
   }
 
   get issues() {
-    const { issues, brand, qa, downloads, noLoad } = this.props;
-    const issueEnv = qa ? 'qa' : 'prod';
-    if (issues[brand] && issues[brand][issueEnv] && issues[brand][issueEnv].length) {
+    const { display, downloads, noLoad } = this.props;
+    if (display.length) {
       return (
         <Grid>
-          {issues[brand][issueEnv].filter(issue => this.props.preview ? true : Date.now() > Date.parse(issue.issue_digitalOnSaleDate)).map((issue, key) => (
+          {display.map((issue, key) => (
             <IssueCover
               key={key}
               issue={issue}
               percent={downloads[issue.$.id]}
+              onClick={() => this.onIssueSelect(issue)}
             />
           ))}
         </Grid>

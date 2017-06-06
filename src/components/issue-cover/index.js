@@ -9,8 +9,8 @@ const Progress = ({ percent }) => percent > 0 && percent < 100 ? (
   </Sticky>
 ) : null;
 
-export default ({ issue, percent }) => (
-  <Card href={`/issue/${issue.$.id}`}>
+export default ({ issue, percent, onClick }) => (
+  <Card onClick={onClick}>
     <Badge status={percent === 100 ? 'success' : null} />
     <Placeholder src={issue.asset_thumbnail.asset_path_signed} />
     <h3>

@@ -29,7 +29,7 @@ export default {
     transition: 'max-height .25s linear',
     overflow: 'hidden',
     fontSize: '.9em',
-    marginLeft: '20px',
+    margin: 20,
   },
   collapsed: {
     maxHeight: 0,

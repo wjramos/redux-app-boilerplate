@@ -1,6 +1,6 @@
 const INITIAL_STATE = {};
 
-export default function brandsReducer(state = INITIAL_STATE, { type, params, response, error }) {
+export default function editionsReducer(state = INITIAL_STATE, { type, params, response, error }) {
   if (type.includes('EDITIONS_')) {
     const newState = Object.assign({}, state);
 
@@ -49,4 +49,4 @@ export default function brandsReducer(state = INITIAL_STATE, { type, params, res
   return state;
 }
 
-brandsReducer.initialState = INITIAL_STATE;
+editionsReducer.initialState = INITIAL_STATE;

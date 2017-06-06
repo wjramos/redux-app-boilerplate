@@ -20,7 +20,11 @@ export default function issuesReducer(state = INITIAL_STATE, { type, params, res
     }
 
     if (type === 'ISSUES_REQUEST') {
-      /* ... */
+      if (!newState[params.brand]) {
+        newState[params.brand] = { prod: [], qa: [] };
+      }
+
+      return newState;
     }
 
     if (type === 'ISSUES_SUCCESS') {
@@ -28,10 +32,6 @@ export default function issuesReducer(state = INITIAL_STATE, { type, params, res
         const issues = response.entities;
         if (issues && issues.length) {
           const issueEnv = params.qa ? 'qa' : 'prod';
-
-          if (!newState[params.brand]) {
-            newState[params.brand] = { prod: [], qa: [] };
-          }
 
           newState[params.brand][issueEnv] = newState[params.brand][issueEnv]
           ? [...new Set(newState[params.brand][issueEnv].concat(issues))]

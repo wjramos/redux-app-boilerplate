@@ -15,7 +15,7 @@ export default function brandsReducer(state = INITIAL_STATE, { type, params, res
     }
 
     if (type === 'BRANDS_REQUEST') {
-      /*...*/
+      /* ... */
     }
 
     if (type === 'BRANDS_SUCCESS') {
@@ -24,7 +24,7 @@ export default function brandsReducer(state = INITIAL_STATE, { type, params, res
     }
 
     if (type === 'BRANDS_FAILURE') {
-      /*...*/
+      /* ... */
     }
   }
 
