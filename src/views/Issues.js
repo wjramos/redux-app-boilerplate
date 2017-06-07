@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { SpinLoader } from 'react-css-loaders';
 import { hashHistory } from 'react-router';
 
-import { LazyTrigger, Card, Placeholder, Accordion, ProgressBar, Sticky, Badge, Select, Grid, Toggle, IssueCover } from '../../components';
-import { propTypes } from '../../util';
+import { LazyTrigger, Card, Placeholder, Accordion, ProgressBar, Sticky, Badge, Select, Grid, Toggle, IssueCover } from '../components';
+import { propTypes } from '../util';
 
 export default class IssuesView extends Component {
   static propTypes = propTypes;

@@ -8,6 +8,31 @@ export function getDeviceWidth() {
   return parseInt(document.documentElement.clientWidth || document.body.clientWidth || window.innerWidth, 10);
 }
 
+export function getGoogleFontsUrl(fonts) {
+  return fonts.reduce((str, font, i) => {
+    let path = str;
+
+    if (i > 0) {
+      path += '|';
+    }
+
+    path += font.name.replace(' ', '+');
+
+    if (font.weights) {
+      path += `:${font.weights.join(',')}`;
+    }
+
+    return path;
+  }, 'https://fonts.googleapis.com/css?family=');
+}
+
+export function loadStylesheet(href) {
+  const link = document.createElement('link');
+  link.href = href;
+  link.rel = 'stylesheet';
+  document.body.appendChild(link);
+}
+
 export function getProps(props) {
   return Object.keys(props).reduce((obj, state) => {
     const type = Array.isArray(reducers[state].initialState) ? 'array' : typeof reducers[state].initialState;

@@ -8,6 +8,7 @@ import { syncHistoryWithStore } from 'react-router-redux';
 import style from './style';
 import { Root } from './containers';
 import configureStore from './stores';
+import { loadStylesheet, getGoogleFontsUrl } from './util';
 
 /* Create a Redux store holding the state of app. */
 const reduxStore = configureStore();
@@ -18,8 +19,17 @@ const history = syncHistoryWithStore(hashHistory, reduxStore);
 function init() {
   FastClick.attach(document.body);
 
+  loadStylesheet(
+    getGoogleFontsUrl([
+      {
+        name: 'Open Sans',
+        weights: [300, 400, 600, 700],
+      },
+    ])
+  );
+
   /* Render Root component */
-  render(
+  return render(
     (
       <StyleRoot>
         <Style rules={style} />
@@ -28,7 +38,6 @@ function init() {
     ),
     document.getElementById('app'),
   );
-
 }
 
 window.addEventListener('statusTap', () => window.scroll(0, 0));

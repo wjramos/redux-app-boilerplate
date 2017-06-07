@@ -3,7 +3,7 @@ const typographicScale = 1.618;
 export default {
   // Global Reset
   html: {
-    fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif',
+    fontFamily: 'Open Sans, Helvetica Neue, Helvetica, Arial, sans-serif',
     boxSizing: 'border-box',
 
     // Accessibilty-friendly setting 1 rem to equal ~10px

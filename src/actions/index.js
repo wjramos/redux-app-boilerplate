@@ -24,3 +24,5 @@ export clearDownloads from './clearDownloads';
 export setPreview from './setPreview';
 
 export setQa from './setQa';
+
+export viewPdf from './viewPdf';

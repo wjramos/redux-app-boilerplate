@@ -12,3 +12,4 @@ export Table from './table';
 export Input from './input';
 export Card from './card';
 export Grid from './grid';
+export Pdf from './pdf';
