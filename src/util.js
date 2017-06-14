@@ -5,7 +5,27 @@ import * as actions from './actions';
 import * as reducers from './reducers/';
 
 export function getDeviceWidth() {
-  return parseInt(document.documentElement.clientWidth || document.body.clientWidth || window.innerWidth, 10);
+  return document.documentElement.clientWidth || document.body.clientWidth || window.innerWidth;
+}
+
+export function getDeviceHeight() {
+  return document.documentElement.clientHeight || document.body.clientHeight || window.innerHeight;
+}
+
+export function isLandscape() {
+  return getDeviceWidth() > getDeviceHeight();
+}
+
+export function getGridItems() {
+  const deviceWidth = getDeviceWidth();
+
+  if (deviceWidth > 1023) {
+    return 8;
+  } else if (deviceWidth > 767) {
+    return 9;
+  }
+
+  return 6;
 }
 
 export function getGoogleFontsUrl(fonts) {

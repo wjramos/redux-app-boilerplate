@@ -1,17 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { propTypes, mapDispatchToProps, mapStateToProps, getDeviceWidth } from '../util';
+import { propTypes, mapDispatchToProps, mapStateToProps, getGridItems } from '../util';
 import { Issues } from '../views';
 
-const deviceWidth = getDeviceWidth();
-
-let LIMIT = 6;
-if (deviceWidth > 1023) {
-  LIMIT = 8;
-} else if (deviceWidth > 767) {
-  LIMIT = 9;
-}
+const LIMIT = getGridItems();
 
 class IssuesContainer extends Component {
   static propTypes = propTypes;
@@ -40,19 +33,22 @@ class IssuesContainer extends Component {
       getBrands, setBrand, getEditions, setEdition, clearEdition,
       clearIssue, getIssues, clearIssues, setDisplay, clearDisplay,
     } = props;
+
+    const {
+      brand: prevBrand, brands: prevBrands, qa: prevQa, preview: prevPreview, edition: prevEdition, issues: prevIssues, editions: prevEditions,
+    } = this.props;
+
     const issueEnv = qa ? 'qa' : 'prod';
+    const newIssues = brand && issues[brand] && issues[brand][issueEnv] ? issues[brand][issueEnv] : null;
+    const newBrands = brands[issueEnv];
+    const newEditions = brand && editions[brand] && editions[brand][issueEnv] ? editions[brand][issueEnv] : null;
+
+    const prevBrandIssues = prevIssues[brand] && prevIssues[brand][issueEnv] ? prevIssues[brand][issueEnv] : null;
+    const prevEnvBrands = this.props.brands[issueEnv];
+    const prevBrandEditions = brand && prevEditions[brand] && prevEditions[brand][issueEnv] ? prevEditions[brand][issueEnv] : null;
 
     // Stop loading new content if fewer than expected results returned - usually means end of content
-    if (brand
-      && issues[brand]
-      && issues[brand][issueEnv]
-      && this.props.issues[brand]
-      && this.props.issues[brand][issueEnv]
-      && (
-        (!issues[brand][issueEnv].length && !this.props.issues[brand][issueEnv].length)
-        || issues[brand][issueEnv].length < this.props.issues[brand][issueEnv].length + LIMIT
-      )
-    ) {
+    if (newIssues && prevBrandIssues && ((!newIssues.length && !prevBrandIssues.length) || newIssues.length < prevBrandIssues.length + LIMIT)) {
       this.setState({ noLoad: true });
     }
 
@@ -62,36 +58,18 @@ class IssuesContainer extends Component {
     }
 
     // If no set brand, but brands available, set to first brand
-    if (!brand && brands[issueEnv] && brands[issueEnv].length) {
-      setBrand(brands[issueEnv][0]);
+    if (!brand && newBrands && newBrands.length) {
+      setBrand(newBrands[0]);
     }
 
-    // If editions have not been fetched for current brand,
-    // attempt to gather available editions
-    if (brand && (!editions[brand] || !editions[brand][issueEnv])) {
-      getEditions(props);
+    if (brand && newBrands && !newBrands.length) {
+      clearBrand();
     }
 
-    // If editions available for current brand and no edition set,
-    // set to first available edition
-    if (!edition && brand && editions[brand] && editions[brand][issueEnv] && editions[brand][issueEnv].length) {
-      setEdition(editions[brand][issueEnv][0]);
-    }
-
-    // On brand change, clear current edition
-    if (edition && (brand !== this.props.brand || qa !== this.props.qa)) {
-      clearEdition();
-    }
-
-    // Editions have already been fetched,
     // something has changed from the previous state
     // Allow progressive loading to continue, fetch fresh issues
-    if (brand
-      && editions[brand]
-      && editions[brand][issueEnv]
-      && (!issues[brand] || !issues[brand][issueEnv])
-    ) {
-      const offset = issues[brand] && issues[brand][issueEnv] ? issues[brand][issueEnv].length : 0;
+    if (brand && brand !== prevBrand && (!issues[brand] || !newIssues)) {
+      const offset = newIssues ? newIssues.length : 0;
       this.setState({ noLoad: false });
       getIssues(
         Object.assign(
@@ -105,33 +83,49 @@ class IssuesContainer extends Component {
       );
     }
 
-    // Set issues to display if none available
-    if (!display.length
-      && issues[brand]
-      && issues[brand][issueEnv]
-      && issues[brand][issueEnv].length
-      && editions[brand]
-      && editions[brand][issueEnv]
-    ) {
-      setDisplay(props);
+    // On brand change, clear current edition
+    if (edition && newEditions && (!newEditions.length || brand === 'all' || brand !== prevBrand || qa !== prevQa)) {
+      clearEdition();
     }
 
-    // Refresh issues display if settings have changed or there are new issues available
+    // If editions have not been fetched for current brand,
+    // attempt to gather available editions
+    if (newIssues && newIssues.length && (!editions[brand] || !newEditions)) {
+      getEditions(props);
+    }
+
+    // If editions available for current brand and no edition set,
+    // set to first available edition
+    if (!edition && newEditions && newEditions.length) {
+      setEdition('all');
+    }
+
     if (
       display.length
-      && (
-        brand !== this.props.brand
-        || edition !== this.props.edition
-        || preview !== this.props.preview
-        || qa !== this.props.qa
-        || issues[brand][issueEnv].length !== this.props.issues[brand][issueEnv].length
-      )
+      && (brand !== prevBrand || qa !== prevQa)
     ) {
       clearDisplay();
     }
 
-    // Clear issue if set
-    if (issue) {
+    // Set issues to display
+    if (newIssues
+      && newIssues.length
+      && newEditions
+      && ((!newEditions.length && !edition) || (newEditions.length && edition))
+      && (
+        !display.length
+        || !prevEditions
+        || newIssues.length !== prevBrandIssues.length
+        || edition !== prevEdition
+        || preview !== prevPreview
+      )
+    ) {
+      setDisplay({ issues: newIssues, edition, preview });
+    }
+
+    // Clear issue if set and navigating to this route
+    if (issue && !this.props.issue) {
+      console.log('clearIssue')
       // clearIssue();
     }
   }

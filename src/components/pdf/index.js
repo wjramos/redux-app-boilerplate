@@ -3,7 +3,7 @@ import Ionicon from 'react-ionicons';
 import Pdf from 'react-pdf-js';
 import { SpinLoader } from 'react-css-loaders';
 
-import { Sticky } from '../';
+import { Sticky, Swipe } from '../';
 
 const BACKGROUND = '#222';
 
@@ -24,11 +24,17 @@ export default class PdfReader extends Component {
   }
 
   onPrevious() {
-    this.setState({ page: this.state.page - 1 });
+    const increment = this.props.landscape ? 2 : 1;
+    this.setState({ page: this.state.page - increment });
   }
 
   onNext() {
-    this.setState({ page: this.state.page + 1 });
+    const increment = this.props.landscape ? 2 : 1;
+    this.setState({ page: this.state.page + increment });
+  }
+
+  onReader() {
+
   }
 
   get previousButton() {
@@ -52,8 +58,15 @@ export default class PdfReader extends Component {
 
   get pageCounter() {
     return (
-      <span style={{ position: 'absolute', lineHeight: '24px', bottom: 0, textAlign: 'center', width: '100%', height: '100%' }}>
-        {this.state.page}/{this.state.pages}
+      <span style={{
+        position: 'absolute',
+        textAlign: 'center',
+        lineHeight: '24px',
+        height: '100%',
+        width: '100%',
+        bottom: 0,
+      }}>
+        {this.state.page}&nbsp;/&nbsp;{this.state.pages}
       </span>
     );
   }
@@ -67,6 +80,7 @@ export default class PdfReader extends Component {
             <ul style={{
               display: 'flex',
               flexFlow: 'row nowrap',
+              alignItems: 'center',
               justifyContent: 'space-between',
             }}>
               {this.previousButton}
@@ -82,33 +96,85 @@ export default class PdfReader extends Component {
 
   get loader() {
     return (
-      <SpinLoader
-        color="#fff"
-        background={BACKGROUND}
-        size={6}
-      />
+      <div style={{ display: 'flex', flexFlow: 'column nowrap' }}>
+        <SpinLoader
+          color="#fff"
+          background={BACKGROUND}
+          size={6}
+        />
+        <p style={{ textAlign: 'center' }}>
+          Loading PDF...
+        </p>
+      </div>
     );
+  }
+
+  get pdf() {
+    if (this.props.landscape) {
+      return (
+        <Swipe
+          onSwipeLeft={::this.onPrevious}
+          onSwipeRight={::this.onNext}
+          onSwipeUp={::this.openReader}
+          style={{
+            color: '#fff',
+            display: 'flex',
+            flexFlow: 'row nowrap',
+            justifyContent: 'center',
+            backgroundColor: BACKGROUND,
+            alignItems: 'center',
+            height: '100vh',
+            width: '100vw',
+          }}
+        >
+          <Pdf
+            onDocumentComplete={::this.onDocumentComplete}
+            onPageComplete={::this.onPageComplete}
+            page={this.state.page}
+            loading={this.loader}
+            file={this.props.pdf}
+            style={{ height: '100%' }}
+          />
+          <Pdf
+            page={this.state.page + 1}
+            loading={(<span />)}
+            file={this.props.pdf}
+            style={{ height: '100%' }}
+          />
+        </Swipe>
+      )
+    }
+
+    return (
+      <Swipe
+        onSwipeLeft={::this.onPrevious}
+        onSwipeRight={::this.onNext}
+        onSwipeUp={::this.openReader}
+        style={{
+          display: 'flex',
+          flexFlow: 'row nowrap',
+          justifyContent: 'center',
+          backgroundColor: BACKGROUND,
+          alignItems: 'center',
+          height: '100vh',
+          width: '100vw',
+        }}
+      >
+        <Pdf
+          onDocumentComplete={::this.onDocumentComplete}
+          onPageComplete={::this.onPageComplete}
+          page={this.state.page}
+          loading={this.loader}
+          file={this.props.pdf}
+        />
+      </Swipe>
+    )
   }
 
   render() {
     return (
-      <div style={{
-        color: '#fff',
-        backgroundColor: BACKGROUND,
-        height: '100vh',
-        width: '100vw',
-        display: 'flex',
-        flexFlow: 'column nowrap',
-        justifyContent: 'space-around',
-      }}>
-        <Pdf
-          onDocumentComplete={::this.onDocumentComplete}
-          onPageComplete={::this.onPageComplete}
-          loading={this.loader}
-          page={this.state.page}
-          file={this.props.pdf}
-          style={{ width: '100%' }}
-        />
+      <div style={{ color: '#fff', textShadow: '0 0 2px #000' }}>
+        {this.pdf}
         {this.pagination}
       </div>
     );

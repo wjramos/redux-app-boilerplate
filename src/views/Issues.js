@@ -83,11 +83,16 @@ export default class IssuesView extends Component {
 
     if (brands[issueEnv] && brands[issueEnv].length) {
       return (
-        <Select
-          value={brand}
-          options={brands[issueEnv]}
-          onChange={::this.onBrandSelect}
-        />
+        <div>
+          <h3>
+            Brand
+          </h3>
+          <Select
+            value={brand}
+            options={brands[issueEnv]}
+            onChange={::this.onBrandSelect}
+          />
+        </div>
       );
     }
 
@@ -100,11 +105,16 @@ export default class IssuesView extends Component {
 
     if (editions[brand] && editions[brand][issueEnv] && editions[brand][issueEnv].length) {
       return (
-        <Select
-          value={edition}
-          options={editions[brand][issueEnv]}
-          onChange={::this.onEditionSelect}
-        />
+        <div>
+          <h3>
+            Edition
+          </h3>
+          <Select
+            value={edition}
+            options={['all', ...editions[brand][issueEnv]]}
+            onChange={::this.onEditionSelect}
+          />
+        </div>
       );
     }
 
@@ -129,7 +139,9 @@ export default class IssuesView extends Component {
   get previewToggle() {
     return (
       <div>
-        <h3>Preview Future Issues</h3>
+        <h3>
+          Show Unreleased
+        </h3>
         <Toggle
           id={'preview'}
           active={this.props.preview}
@@ -142,9 +154,10 @@ export default class IssuesView extends Component {
   get reset() {
     return (
       <button onClick={() => {
+        this.props.clearBrands(this.props);
         this.props.clearIssues(this.props);
         this.props.clearEditions(this.props);
-        this.props.clearBrands(this.props);
+        this.props.clearDisplay(this.props);
       }}>
         reset
       </button>
@@ -153,12 +166,18 @@ export default class IssuesView extends Component {
 
   get filters() {
     return (
-      <Accordion heading="Filter">
-        {this.brandSelect}
-        {this.editionSelect}
-        {this.qaToggle}
-        {this.previewToggle}
+      <Accordion
+        heading="Filter"
+      >
         {this.reset}
+        <section style={{ display: 'flex', flexFlow: 'row nowrap', justifyContent: 'space-around', textAlign: 'center', marginBottom: 20 }}>
+          {this.qaToggle}
+          {this.previewToggle}
+        </section>
+        <section style={{ display: 'flex', flexFlow: 'row nowrap', justifyContent: 'space-around', textAlign: 'center', marginBottom: 20 }}>
+          {this.brandSelect}
+          {this.editionSelect}
+        </section>
       </Accordion>
     );
   }

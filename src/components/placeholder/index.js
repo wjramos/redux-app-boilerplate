@@ -12,6 +12,20 @@ const SCROLL_THRESHOLD = 80;
 
 @Radium
 export default class Placeholder extends Component {
+  static propTypes = {
+    style: PropTypes.object,
+    src: PropTypes.string,
+    width: PropTypes.number,
+    maxWidth: PropTypes.number,
+    ratio: PropTypes.number,
+  }
+
+  static defaultProps = {
+    style: [],
+    src: '',
+    width: 1,
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -110,7 +124,7 @@ export default class Placeholder extends Component {
 
   render() {
     return (
-      <div style={{ width: `${(this.props.width || 1) * 100}%`, margin: 'auto' }}>
+      <div style={{ width: `${(this.props.width || 1) * 100}%` }}>
         <figure
           style={[
             style.placeholder,
@@ -125,17 +139,3 @@ export default class Placeholder extends Component {
     );
   }
 }
-
-Placeholder.propTypes = {
-  style: PropTypes.array,
-  src: PropTypes.string,
-  width: PropTypes.number,
-  maxWidth: PropTypes.number,
-  ratio: PropTypes.number,
-};
-
-Placeholder.defaultProps = {
-  style: [],
-  src: '',
-  width: 1,
-};

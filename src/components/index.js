@@ -1,3 +1,4 @@
+export TableOfContents from './table-of-contents';
 export LazyTrigger from './lazy-trigger';
 export ProgressBar from './progress-bar';
 export Placeholder from './placeholder';
@@ -10,6 +11,7 @@ export Button from './button';
 export Badge from './badge';
 export Table from './table';
 export Input from './input';
+export Swipe from './swipe';
 export Card from './card';
 export Grid from './grid';
 export Pdf from './pdf';

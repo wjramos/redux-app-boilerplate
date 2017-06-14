@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { SpinLoader } from 'react-css-loaders';
 import { hashHistory } from 'react-router';
 
-import { LazyTrigger, Card, Placeholder, ProgressBar, Sticky, Badge, Select, Grid, Toggle, IssueCover } from '../components';
+import { LazyTrigger, Card, Placeholder, ProgressBar, Sticky, Badge, Select, Grid, Toggle, IssueCover, TableOfContents } from '../components';
 import { propTypes } from '../util';
 
 export default class IssueView extends Component {
@@ -11,7 +11,7 @@ export default class IssueView extends Component {
   get issue() {
     return (
       <section style={{ width: '50%', margin: 'auto' }}>
-        <Card onClick={hashHistory.push(`/pdf/${this.props.issue.$.id}`)}>
+        <Card onClick={() => hashHistory.push(`/pdf/${this.props.issue.$.id}`)}>
           <Placeholder src={this.props.issue.asset_thumbnail.asset_path_signed} />
         </Card>
       </section>
@@ -34,7 +34,7 @@ export default class IssueView extends Component {
           {this.props.issue.$name || this.props.issue.issue_coverDisplayDate}
         </h1>
         {this.issue}
-        {/* {this.toc} */}
+        {this.toc}
       </main>
     );
   }

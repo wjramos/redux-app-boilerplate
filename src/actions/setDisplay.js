@@ -1,4 +1,4 @@
-export default ({ issues, brand, qa, preview }) => ({
+export default ({ issues, preview, edition }) => ({
   type: 'DISPLAY_SET',
-  params: { issues, brand, qa, preview },
+  params: { issues, preview, edition },
 });

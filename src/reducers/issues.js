@@ -2,12 +2,12 @@ const INITIAL_STATE = {};
 
 export default function issuesReducer(state = INITIAL_STATE, { type, params, response, error }) {
   if (type.includes('ISSUES_')) {
+    const issueEnv = params.qa ? 'qa' : 'prod';
     const newState = Object.assign({}, state);
 
     if (type === 'ISSUES_CLEAR') {
       if (params.brand) {
         if (state[params.brand] && params.qa !== undefined) {
-          const issueEnv = params.qa ? 'qa' : 'prod';
           delete newState[params.brand][issueEnv];
           return newState;
         }
@@ -21,18 +21,20 @@ export default function issuesReducer(state = INITIAL_STATE, { type, params, res
 
     if (type === 'ISSUES_REQUEST') {
       if (!newState[params.brand]) {
-        newState[params.brand] = { prod: [], qa: [] };
+        newState[params.brand] = {};
       }
-
-      return newState;
     }
 
     if (type === 'ISSUES_SUCCESS') {
       if (response) {
         const issues = response.entities;
         if (issues && issues.length) {
-          const issueEnv = params.qa ? 'qa' : 'prod';
 
+          if (!newState[params.brand]) {
+            newState[params.brand] = {};
+          }
+
+          // Combine new issues to support progressive issue loading with offsets
           newState[params.brand][issueEnv] = newState[params.brand][issueEnv]
           ? [...new Set(newState[params.brand][issueEnv].concat(issues))]
           : issues;
@@ -43,7 +45,7 @@ export default function issuesReducer(state = INITIAL_STATE, { type, params, res
     }
 
     if (type === 'ISSUES_FAILURE') {
-      /* ... */
+      return newState;
     }
   }
 

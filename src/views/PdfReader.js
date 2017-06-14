@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { Pdf } from '../components';
-import { propTypes } from '../util';
+import { propTypes, isLandscape } from '../util';
 
 
 export default class PdfReader extends Component {
@@ -9,7 +9,7 @@ export default class PdfReader extends Component {
 
   render() {
     return (
-      <Pdf {...this.props} />
+      <Pdf {...this.props} landscape={isLandscape()} />
     );
   }
 }
