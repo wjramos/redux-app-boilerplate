@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import { LazyTrigger } from '..';
 
 const sticky = { position: 'fixed', left: 0, right: 0, top: 0, bottom: 'initial' };
 
-export default class Sticky extends Component {
+export default class Sticky extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -17,6 +17,9 @@ export default class Sticky extends Component {
       <LazyTrigger
         style={Object.assign(
           {},
+          {
+            zIndex: 999,
+          },
           this.props.style,
           (this.props.stuck || this.state.sticky)
             ? Object.assign(

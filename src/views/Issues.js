@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { SpinLoader } from 'react-css-loaders';
 import { hashHistory } from 'react-router';
 
 import { LazyTrigger, Card, Placeholder, Accordion, ProgressBar, Sticky, Badge, Select, Grid, Toggle, IssueCover } from '../components';
 import { propTypes } from '../util';
 
-export default class IssuesView extends Component {
+export default class IssuesView extends PureComponent {
   static propTypes = propTypes;
 
   onBrandSelect(event) {
@@ -166,26 +166,35 @@ export default class IssuesView extends Component {
 
   get filters() {
     return (
-      <Accordion
-        heading="Filter"
-      >
-        {this.reset}
-        <section style={{ display: 'flex', flexFlow: 'row nowrap', justifyContent: 'space-around', textAlign: 'center', marginBottom: 20 }}>
-          {this.qaToggle}
-          {this.previewToggle}
-        </section>
-        <section style={{ display: 'flex', flexFlow: 'row nowrap', justifyContent: 'space-around', textAlign: 'center', marginBottom: 20 }}>
-          {this.brandSelect}
-          {this.editionSelect}
-        </section>
-      </Accordion>
+      <Sticky stuck>
+        <Accordion
+          heading="Filter"
+        >
+          {this.reset}
+          <section style={{ display: 'flex', flexFlow: 'row nowrap', justifyContent: 'space-around', textAlign: 'center', marginBottom: 20 }}>
+            {this.qaToggle}
+            {this.previewToggle}
+          </section>
+          <section style={{ display: 'flex', flexFlow: 'row nowrap', justifyContent: 'space-around', textAlign: 'center', marginBottom: 20 }}>
+            {this.brandSelect}
+            {this.editionSelect}
+          </section>
+        </Accordion>
+      </Sticky>
+    );
+  }
+
+  get logo() {
+    return (
+      <Placeholder src={this.props.issues[0].issue_brand.$imageThumbnailUrl} width={50} />
     );
   }
 
   render() {
     return (
-      <main>
+      <main style={{ padding: '80px 0' }}>
         {this.filters}
+        {this.logo}
         {this.issues}
         {this.trigger}
       </main>

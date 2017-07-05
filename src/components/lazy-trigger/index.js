@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
-export default class LazyTrigger extends Component {
+export default class LazyTrigger extends PureComponent {
   static isInViewport(trigger, threshold) {
     if (trigger) {
       const { top, left, bottom, right } = trigger.getBoundingClientRect();

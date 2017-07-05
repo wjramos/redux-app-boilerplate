@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 
 import { propTypes, mapDispatchToProps, mapStateToProps } from '../util';
 import { Issue } from '../views';
 
-class IssueContainer extends Component {
+class IssueContainer extends PureComponent {
   static propTypes = propTypes;
 
   componentDidMount() {

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import Ionicon from 'react-ionicons';
 import Pdf from 'react-pdf-js';
 import { SpinLoader } from 'react-css-loaders';
@@ -7,7 +7,7 @@ import { Sticky, Swipe } from '../';
 
 const BACKGROUND = '#222';
 
-export default class PdfReader extends Component {
+export default class PdfReader extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {

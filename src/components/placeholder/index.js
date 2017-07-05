@@ -1,28 +1,28 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Radium from 'radium';
 
 import { LazyTrigger } from '..';
 import style from './style';
 
-const DEVICE_WIDTH = parseInt(document.documentElement.clientWidth || document.body.clientWidth || window.innerWidth, 10); // Remove decimals
-const IMAGE_QUALITY = 90;
-const PLACEHOLDER_WIDTH = 25;
+const DEVICE_WIDTH = 2 * parseInt(document.documentElement.clientWidth || document.body.clientWidth || window.innerWidth, 10); // Remove decimals
+const IMAGE_QUALITY = 40;
+const PLACEHOLDER_WIDTH = 100;
 const SCROLL_THRESHOLD = 80;
 
 @Radium
-export default class Placeholder extends Component {
+export default class Placeholder extends PureComponent {
   static propTypes = {
     style: PropTypes.object,
-    src: PropTypes.string,
+    src: PropTypes.string.isRequired,
     width: PropTypes.number,
+    height: PropTypes.number,
     maxWidth: PropTypes.number,
+    height: PropTypes.number,
     ratio: PropTypes.number,
   }
 
   static defaultProps = {
-    style: [],
-    src: '',
     width: 1,
   }
 
@@ -38,7 +38,8 @@ export default class Placeholder extends Component {
     const { src, width, maxWidth } = this.props;
 
     if (this.placeholder) {
-      const ratio = this.props.ratio || this.getRatio(this.image && this.image.complete ? this.image : this.placeholder);
+      const ratio = this.props.ratio || this.getRatio(this.isComplete ? this.image : this.placeholder);
+
       if (ratio !== 1) {
         this.setState({ ratio });
       }
@@ -46,36 +47,55 @@ export default class Placeholder extends Component {
       if (!this.image && LazyTrigger.isInViewport(this.placeholder, SCROLL_THRESHOLD)) {
         const quality = IMAGE_QUALITY;
         const width = Math.min(maxWidth, DEVICE_WIDTH * width);
-
+        const height = this.props.ratio ? Math.round(this.props.ratio * width) : this.placeholder.height
         const image = this.image = new Image();
+
         image.onload = () => this.setState({ opacity: 1 });
-        image.src = this.getImage({ src, quality, width });
+        image.src = this.getImage({ src, quality, width, height, ratio });
       }
     }
   }
 
   getRatio(image) {
-    const { height = 1, width = 1, complete = false } = image || {};
-    if (complete) {
+    if (image) {
+      const { height = 1, width = 1, complete = false } = image;
+
       return height / width;
     }
 
     return 1;
   }
 
-  getImage({ src = '', quality = 90, height = 0, width = 0 }) {
-    let query = `https://imagesvc.timeincapp.com/?url=${encodeURIComponent(src)}`;
+  getImage({ src = '', quality = IMAGE_QUALITY, height = 0, width = 0, ratio = 0 }) {
+    let query = `https://imagesvc.timeincapp.com/v3/tor0/image?url=${encodeURIComponent(src)}`;
+
+    if (this.isCropped) {
+      query += '&c=sc&poi=face'
+    }
 
     if (quality > -1) {
       query += `&q=${quality}`;
     }
+
     if (height) {
       query += `&h=${height}`;
     }
+
     if (width) {
       query += `&w=${width}`;
     }
+
     return query;
+  }
+
+  get fileType() {
+    return this.props.src.split('.').pop();
+  }
+
+  get isCropped() {
+    const { ratio, height, width } = this.props;
+
+    return (ratio || height && width) && (ratio || height / width) !== getRatio(this.isComplete ? this.image : this.placeholder);
   }
 
   get isComplete() {
@@ -90,25 +110,31 @@ export default class Placeholder extends Component {
         role="presentation"
         src={src}
         onLoad={::this.onInit}
-        style={[style.img, style.imgFull, style.fill, { opacity }, this.props.style]}
+        style={[style.img, style.imgFull, style.fillWidth, { opacity }, this.props.style]}
       />
     );
   }
 
   get placeholderImage() {
-    const { src } = this.props;
+    const { src, ratio } = this.props;
     const quality = 0;
     const width = PLACEHOLDER_WIDTH;
+    const height = ratio ? Math.round(width * ratio) : null;
+    const source = this.getImage({ src, quality, width, height, ratio });
 
-    return (
-      <img
-        role="presentation"
-        ref={node => (this.placeholder = node)}
-        onLoad={::this.onInit}
-        src={this.getImage({ src, quality, width })}
-        style={[style.img, style.imgSmall, style.fill, this.props.style]}
-      />
-    );
+    if (!this.isComplete) {
+      return (
+        <img
+          role="presentation"
+          ref={node => (this.placeholder = node)}
+          onLoad={::this.onInit}
+          src={source}
+          style={[style.img, style.imgSmall, style.fill, this.props.style]}
+        />
+      );
+    }
+
+    return null;
   }
 
   get placeholderTrigger() {

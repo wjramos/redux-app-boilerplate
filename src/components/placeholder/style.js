@@ -1,21 +1,12 @@
-/**
-  * Placeholder styles
-  */
-
 export default {
   placeholder: {
     position: 'relative',
     overflow: 'hidden',
-
-    // Fixes WebKit bug which prevents border-radius from clipping images
-    opacity: 0.999,
   },
   ratio: {
     height: 0,
-    transition: '.25s linear padding-bottom',
-
-    // Replace this - initial shape is square
-    paddingBottom: '100%',
+    // Default to 2:3 ratio
+    paddingBottom: '66.66667%',
   },
   fill: {
     width: '100%',
@@ -24,14 +15,15 @@ export default {
     left: '100%',
     transform: 'translate(-100%, -100%)',
   },
+  fillWidth: {
+    width: '100%',
+    position: 'relative',
+  },
   img: {
-    transition: 'opacity .5s linear',
+    transition: 'opacity .5s ease-in',
   },
   imgSmall: {
     filter: 'blur(50px)',
-    transform: 'scale(1)',
-  },
-  imgFull: {
   },
   loaded: {
     opacity: 1,

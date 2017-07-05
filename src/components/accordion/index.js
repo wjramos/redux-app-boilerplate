@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Ionicon from 'react-ionicons';
 import Radium from 'radium';
@@ -6,7 +6,7 @@ import Radium from 'radium';
 import style from './style';
 
 @Radium
-export default class Accordion extends Component {
+export default class Accordion extends PureComponent {
   static propTypes = {
     heading: PropTypes.string,
     children: PropTypes.any,

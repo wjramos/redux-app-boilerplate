@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { SpinLoader } from 'react-css-loaders';
 import { hashHistory } from 'react-router';
 
 import { LazyTrigger, Card, Placeholder, ProgressBar, Sticky, Badge, Select, Grid, Toggle, IssueCover, TableOfContents } from '../components';
 import { propTypes } from '../util';
 
-export default class IssueView extends Component {
+export default class IssueView extends PureComponent {
   static propTypes = propTypes;
 
   get issue() {

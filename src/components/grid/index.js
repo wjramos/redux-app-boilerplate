@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import Radium from 'radium';
 
 import style from './style';
 
 @Radium
-export default class Grid extends Component {
+export default class Grid extends PureComponent {
   render() {
     const { children } = this.props;
     if (children.length) {

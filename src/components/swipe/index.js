@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
-export default class Swipe extends Component {
+export default class Swipe extends PureComponent {
   static propTypes = {
     minDistance: PropTypes.number,
     maxTouch: PropTypes.number,

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 
 import { propTypes, mapDispatchToProps, mapStateToProps, getGridItems } from '../util';
@@ -6,7 +6,7 @@ import { Issues } from '../views';
 
 const LIMIT = getGridItems();
 
-class IssuesContainer extends Component {
+class IssuesContainer extends PureComponent {
   static propTypes = propTypes;
 
   constructor(props) {

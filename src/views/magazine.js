@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { PropTypes } from 'prop-types';
 import { hashHistory } from 'react-router';
 
-export default class MagazineView extends Component {
+export default class MagazineView extends PureComponent {
   static propTypes = {
     issue: PropTypes.object.isRequired,
     location: PropTypes.object,

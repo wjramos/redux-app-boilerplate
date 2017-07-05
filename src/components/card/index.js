@@ -1,7 +1,7 @@
 /**
   * Article summary web component
   */
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { hashHistory } from 'react-router';
 import Radium from 'radium';
@@ -9,7 +9,7 @@ import Radium from 'radium';
 import style from './style';
 
 @Radium
-export default class Card extends Component {
+export default class Card extends PureComponent {
   static propTypes = {
     children: PropTypes.any,
     onClick: PropTypes.func,
